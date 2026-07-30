@@ -1,0 +1,263 @@
+/* Style PDF académique cyber — Livecampus / Remédiation et Législation
+   Optimisé pour un rendu léger (peu de calques, motifs SVG simples). */
+
+:root {
+  --lc-blue: #3ba4e0;
+  --ink: #0f2744;
+  --ink-soft: #1e3a5f;
+  --muted: #5b6b7c;
+  --line: #d5e3ef;
+}
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm 16mm;
+}
+
+html {
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+body.qcm-doc,
+body {
+  font-family: "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.55;
+  color: #1a2332;
+  background-color: #ffffff;
+  /* Motif cyber léger (SVG unique, faible coût de rendu) */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240'%3E%3Cg fill='none' stroke='%233ba4e0' stroke-opacity='0.11' stroke-width='1'%3E%3Cpath d='M40 20h40l20 34-20 34H40L20 54z'/%3E%3Ccircle cx='190' cy='55' r='28'/%3E%3Cpath d='M150 170h50M175 145v50'/%3E%3Crect x='30' y='150' width='46' height='46' rx='6' transform='rotate(15 53 173)'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 220px 220px;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.doc-wrap {
+  position: relative;
+  z-index: 1;
+}
+
+/* En-tête branding */
+.doc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 14px;
+  margin: 0 0 1.2em;
+  border: 1px solid rgba(59, 164, 224, 0.28);
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(59, 164, 224, 0.12) 0%, #ffffff 55%);
+  page-break-inside: avoid;
+}
+
+.doc-header__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.doc-header__logo {
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid rgba(59, 164, 224, 0.35);
+  flex-shrink: 0;
+}
+
+.doc-header__meta {
+  min-width: 0;
+}
+
+.doc-header__meta .school {
+  font-size: 9pt;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--lc-blue);
+  margin: 0 0 2px;
+}
+
+.doc-header__meta .doc-title {
+  font-size: 11pt;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0;
+  line-height: 1.25;
+}
+
+.doc-header__meta .doc-sub {
+  font-size: 8.5pt;
+  color: var(--muted);
+  margin: 2px 0 0;
+}
+
+.doc-header__profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.doc-header__profile-text {
+  text-align: right;
+}
+
+.doc-header__profile-text .name {
+  margin: 0;
+  font-size: 10pt;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.doc-header__profile-text .role {
+  margin: 1px 0 0;
+  font-size: 8pt;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.doc-header__photo {
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 0 2px rgba(59, 164, 224, 0.55);
+}
+
+h1 {
+  font-size: 20pt;
+  font-weight: 750;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  margin: 0.2em 0 0.55em;
+  padding-bottom: 0.35em;
+  border-bottom: 3px solid var(--lc-blue);
+}
+
+h2 {
+  font-size: 12pt;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 1.45em 0 0.5em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+h3 {
+  font-size: 11.5pt;
+  font-weight: 700;
+  color: var(--ink-soft);
+  margin: 1.25em 0 0.4em;
+  padding: 0.35em 0 0.35em 0.65em;
+  border-left: 4px solid var(--lc-blue);
+  background: rgba(59, 164, 224, 0.08);
+  page-break-after: avoid;
+}
+
+h4 {
+  font-size: 10.5pt;
+  font-weight: 650;
+  color: var(--ink-soft);
+  margin: 0.95em 0 0.3em;
+}
+
+p {
+  margin: 0 0 0.7em;
+  text-align: justify;
+  hyphens: auto;
+}
+
+strong {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+em {
+  color: #334155;
+}
+
+ul, ol {
+  margin: 0.3em 0 0.85em;
+  padding-left: 1.3em;
+}
+
+li {
+  margin: 0.25em 0;
+}
+
+li > p {
+  margin: 0.15em 0;
+  text-align: left;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin: 1.25em 0;
+}
+
+blockquote {
+  margin: 0.85em 0;
+  padding: 0.65em 0.9em;
+  border-left: 3px solid var(--lc-blue);
+  background: rgba(59, 164, 224, 0.06);
+  color: #334155;
+  font-size: 9.5pt;
+}
+
+blockquote p {
+  margin: 0.2em 0;
+  text-align: left;
+}
+
+code {
+  font-family: "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.88em;
+  background: rgba(59, 164, 224, 0.1);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+}
+
+h1 + p,
+h1 + p + p,
+h1 + p + p + p,
+h1 + p + p + p + p {
+  font-size: 9.5pt;
+  line-height: 1.45;
+  color: var(--muted);
+  margin: 0.12em 0;
+}
+
+a {
+  color: var(--ink-soft);
+  text-decoration: none;
+  border-bottom: 1px dotted rgba(59, 164, 224, 0.7);
+}
+
+.doc-footer {
+  margin-top: 1.8em;
+  padding-top: 0.7em;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 8pt;
+  color: var(--muted);
+}
+
+h2, h3, h4 {
+  page-break-inside: avoid;
+}
+
+p, li, blockquote {
+  orphans: 3;
+  widows: 3;
+}
