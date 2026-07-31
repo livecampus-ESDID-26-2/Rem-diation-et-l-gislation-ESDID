@@ -29,12 +29,14 @@ REMEDIATION_ET_LEGISLATION_MASIA_ANTOINE_QUIZ_N1.pdf
 
 ```text
 NOM_DU_COURS_NOM1_NOM2_NOM3_MINI_CAS_1_G1.pdf
+NOM_DU_COURS_NOM1_NOM2_NOM3_MINI_CAS_2_G1.pdf
 ```
 
-**Exemple :**
+**Exemples :**
 
 ```text
 REMEDIATION_ET_LEGISLATION_BADET_LEBLOND_LOURENCO_MASIA_MINI_CAS_1_G1.pdf
+REMEDIATION_ET_LEGISLATION_BADET_LEBLOND_LOURENCO_MASIA_MINI_CAS_2_G1.pdf
 ```
 
 > Inclure **tous les noms de famille** des membres du groupe, **par ordre alphabétique**.  
