@@ -400,6 +400,22 @@ h2#reponses-aux-taches {
   break-before: page;
 }
 
+/* Saut de page avant Q2, Q3… (inséré en HTML ; Q1 reste avec « Réponses ») */
+.question-break {
+  break-before: page;
+  page-break-before: always;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* Glossaire en fin de document */
+h2#glossaire {
+  page-break-before: always;
+  break-before: page;
+}
+
 h3 {
   font-size: 11.5pt;
   font-weight: 700;
@@ -648,7 +664,6 @@ div.footnote {
   font-size: 8.5pt;
   line-height: 1.45;
   color: #334155;
-  page-break-inside: avoid;
 }
 
 div.footnote hr {
@@ -656,18 +671,29 @@ div.footnote hr {
 }
 
 div.footnote ol {
-  padding-left: 1.35em;
+  padding-left: 0;
   margin: 0.25em 0 0;
+  list-style: none;
+  counter-reset: none;
 }
 
 div.footnote li {
-  margin: 0.4em 0;
+  margin: 0.45em 0;
   text-align: left;
+  padding-left: 0;
 }
 
 div.footnote li p {
   margin: 0.1em 0;
   text-align: left;
+}
+
+div.footnote .fn-num {
+  display: inline-block;
+  min-width: 2.2em;
+  font-weight: 700;
+  color: var(--lc-blue);
+  margin-right: 0.35em;
 }
 
 div.footnote .footnote-backref {

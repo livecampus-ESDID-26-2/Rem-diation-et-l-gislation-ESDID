@@ -620,6 +620,82 @@ def wrap_keep_together_blocks(html_body: str) -> str:
     return "".join(parts)
 
 
+def insert_question_page_breaks(html_body: str) -> str:
+    """Saut de page avant chaque question numérotée, sauf la première (reste avec « Réponses »)."""
+    pattern = re.compile(
+        r'(?:<div class="keep-together[^"]*"[^>]*>\s*)?<h3\b[^>]*>\s*\d+\.',
+        flags=re.IGNORECASE,
+    )
+    count = 0
+
+    def repl(match: re.Match[str]) -> str:
+        nonlocal count
+        count += 1
+        if count == 1:
+            return match.group(0)
+        return f'<div class="question-break" aria-hidden="true"></div>{match.group(0)}'
+
+    return pattern.sub(repl, html_body)
+
+
+def apply_section_footnote_labels(html_body: str) -> str:
+    """Renumérote les notes en X.Y selon la question (h3 « N. … ») d’apparition."""
+    section_starts: list[tuple[int, int]] = []
+    for match in re.finditer(r"<h3\b[^>]*>\s*(\d+)\.", html_body, flags=re.IGNORECASE):
+        section_starts.append((match.start(), int(match.group(1))))
+    if not section_starts:
+        return html_body
+
+    label_to_code: dict[str, str] = {}
+    counters: dict[int, int] = {}
+
+    for match in re.finditer(
+        r'<a class="footnote-ref" href="#fn:([^"]+)">(\d+)</a>',
+        html_body,
+    ):
+        label = match.group(1)
+        if label in label_to_code:
+            continue
+        qnum = section_starts[0][1]
+        for pos, candidate in section_starts:
+            if pos <= match.start():
+                qnum = candidate
+            else:
+                break
+        counters[qnum] = counters.get(qnum, 0) + 1
+        label_to_code[label] = f"{qnum}.{counters[qnum]}"
+
+    if not label_to_code:
+        return html_body
+
+    def repl_ref(match: re.Match[str]) -> str:
+        label = match.group(1)
+        code = label_to_code.get(label, match.group(2))
+        return f'<a class="footnote-ref" href="#fn:{label}">{code}</a>'
+
+    html_body = re.sub(
+        r'<a class="footnote-ref" href="#fn:([^"]+)">(\d+)</a>',
+        repl_ref,
+        html_body,
+    )
+
+    for label, code in label_to_code.items():
+        html_body = re.sub(
+            rf'(<li id="fn:{re.escape(label)}">\s*<p>)',
+            rf'\1<span class="fn-num">{code}</span> ',
+            html_body,
+        )
+
+    # Backlink titles plus clairs
+    for label, code in label_to_code.items():
+        html_body = html_body.replace(
+            f'href="#fnref:{label}" title="Jump back to footnote',
+            f'href="#fnref:{label}" title="Retour à la note {code}',
+        )
+
+    return html_body
+
+
 def md_to_html(
     md_text: str,
     css: str,
@@ -639,8 +715,7 @@ def md_to_html(
         body_src,
         extensions=["extra", "sane_lists", "smarty"],
         extension_configs={
-            # Numéros = ordre des définitions (alignées sur l’ordre d’apparition dans le texte)
-            "footnotes": {"USE_DEFINITION_ORDER": True},
+            "footnotes": {"USE_DEFINITION_ORDER": False},
         },
         output_format="html5",
     )
@@ -648,6 +723,8 @@ def md_to_html(
     # On passe IMAGES_DIR via les chemins relatifs du md
     body = embed_local_images(body, ROOT)
     body = wrap_keep_together_blocks(body)
+    body = insert_question_page_breaks(body)
+    body = apply_section_footnote_labels(body)
     header = build_header(meta, logo_uri, profile_uri)
 
     sommaire = ""

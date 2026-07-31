@@ -44,15 +44,15 @@ Un incident majeur survient un **lundi matin** :
 
 #### 1. Détection de l’incident
 
-La crise débute par la détection de plusieurs anomalies : indisponibilité du site de vente de billets, saturation de serveurs internes et alerte concernant une possible intrusion dans le système de gestion des trains. Les équipes de supervision et le SOC doivent immédiatement centraliser les alertes, ouvrir un incident critique et conserver les premiers journaux techniques.
+La crise débute par la détection de plusieurs anomalies : indisponibilité du site de vente de billets, saturation de serveurs internes et alerte concernant une possible intrusion dans le système de gestion des trains. Les équipes de supervision et le SOC[^soc] doivent immédiatement centraliser les alertes, ouvrir un incident critique et conserver les premiers journaux techniques.
 
 #### 2. Qualification de l’incident
 
-L’équipe de sécurité analyse rapidement la situation afin d’identifier les systèmes touchés, la nature des attaques et leurs conséquences possibles. Elle doit distinguer l’attaque DDoS, la suspicion d’intrusion et la possible fuite de données clients. L’incident est classé comme critique en raison des risques pour la sécurité ferroviaire, les voyageurs, les données personnelles et l’activité commerciale.
+L’équipe de sécurité analyse rapidement la situation afin d’identifier les systèmes touchés, la nature des attaques et leurs conséquences possibles. Elle doit distinguer l’attaque DDoS[^ddos], la suspicion d’intrusion et la possible fuite de données clients. L’incident est classé comme critique en raison des risques pour la sécurité ferroviaire, les voyageurs, les données personnelles et l’activité commerciale.
 
 #### 3. Activation de la cellule de crise
 
-La direction générale déclenche le plan de gestion de crise et réunit une cellule composée notamment du RSSI, du SOC, des équipes informatiques, des responsables métiers, du service juridique, du DPO et de la communication. Un responsable de crise est désigné afin de coordonner les décisions, répartir les rôles et organiser des points de situation réguliers.
+La direction générale déclenche le plan de gestion de crise et réunit une cellule composée notamment du RSSI[^rssi], du SOC, des équipes informatiques, des responsables métiers, du service juridique, du DPO[^dpo] et de la communication. Un responsable de crise est désigné afin de coordonner les décisions, répartir les rôles et organiser des points de situation réguliers.
 
 #### 4. Confinement immédiat
 
@@ -68,7 +68,7 @@ Les équipes de réponse à incident recherchent l’origine et le déroulement 
 
 #### 7. Communication et notifications
 
-La communication doit être régulière, centralisée et validée par la cellule de crise. Les voyageurs sont informés de l’indisponibilité du site et des solutions alternatives pour acheter leurs billets ou suivre leurs trajets. Les salariés reçoivent des consignes internes afin d’éviter les rumeurs et les erreurs de communication. L’entreprise échange avec les autorités compétentes, notamment l’ANSSI, et le DPO évalue la nécessité d’une notification à la CNIL en cas de violation de données personnelles. Aucune fuite de données ne doit être annoncée comme certaine avant d’avoir été confirmée.
+La communication doit être régulière, centralisée et validée par la cellule de crise. Les voyageurs sont informés de l’indisponibilité du site et des solutions alternatives pour acheter leurs billets ou suivre leurs trajets. Les salariés reçoivent des consignes internes afin d’éviter les rumeurs et les erreurs de communication. L’entreprise échange avec les autorités compétentes, notamment l’ANSSI[^anssi], et le DPO évalue la nécessité d’une notification à la CNIL[^cnil] en cas de violation de données personnelles. Aucune fuite de données ne doit être annoncée comme certaine avant d’avoir été confirmée.
 
 #### 8. Éradication et restauration
 
@@ -92,7 +92,7 @@ C’est elle qui prend les décisions finales et qui porte la responsabilité gl
 
 #### Le RSSI (responsable de la sécurité des systèmes d’information)
 
-C’est le chef d’orchestre technique de la crise. Il coordonne les équipes IT, analyse la nature de l’attaque (ici, à la fois le DDoS et la suspicion d’intrusion), évalue la gravité et propose les mesures de confinement. C’est lui qui fait le lien entre le terrain technique et la direction, en traduisant les infos complexes en décisions compréhensibles.
+C’est le chef d’orchestre technique de la crise. Il coordonne les équipes IT[^it], analyse la nature de l’attaque (ici, à la fois le DDoS et la suspicion d’intrusion), évalue la gravité et propose les mesures de confinement. C’est lui qui fait le lien entre le terrain technique et la direction, en traduisant les infos complexes en décisions compréhensibles.
 
 #### L’équipe IT
 
@@ -104,7 +104,7 @@ Il gère tout ce qui est message vers l’extérieur (et l’intérieur). Vu que
 
 #### Le service juridique
 
-Il s’assure que l’entreprise respecte ses obligations légales, notamment si les données personnelles des clients (noms, adresses, numéros de cartes bancaires) sont vraiment compromises. Dans ce cas, il faut par exemple notifier la CNIL dans les délais imposés par le RGPD. Le juridique évalue aussi les risques de plaintes ou de poursuites, et encadre ce que l’entreprise peut dire publiquement sans s’exposer légalement.
+Il s’assure que l’entreprise respecte ses obligations légales, notamment si les données personnelles des clients (noms, adresses, numéros de cartes bancaires) sont vraiment compromises. Dans ce cas, il faut par exemple notifier la CNIL dans les délais imposés par le RGPD[^rgpd]. Le juridique évalue aussi les risques de plaintes ou de poursuites, et encadre ce que l’entreprise peut dire publiquement sans s’exposer légalement.
 
 #### Les métiers impactés
 
@@ -117,18 +117,18 @@ Ce sont les équipes opérationnelles directement touchées par l’incident, ic
 Pour confirmer l’intrusion et évaluer l’ampleur de l’attaque, il faut utiliser plusieurs outils de détection :
 
 - **Antivirus et antimalwares** pour détecter les logiciels malveillants connus.
-- **Pare-feux (firewalls)** pour analyser les connexions réseau suspectes.
-- **IDS/IPS** (systèmes de détection et de prévention d’intrusion) afin d’identifier les tentatives d’intrusion et de bloquer certaines attaques.
-- **SIEM** (*Security Information and Event Management*) pour centraliser et analyser les journaux d’événements afin de détecter des activités anormales.
+- **Pare-feux (firewalls)**[^firewall] pour analyser les connexions réseau suspectes.
+- **IDS/IPS**[^ids-ips] (systèmes de détection et de prévention d’intrusion) afin d’identifier les tentatives d’intrusion et de bloquer certaines attaques.
+- **SIEM**[^siem] (*Security Information and Event Management*) pour centraliser et analyser les journaux d’événements afin de détecter des activités anormales.
 - **SOC** (*Security Operations Center*) pour assurer une surveillance continue des alertes et coordonner l’analyse de l’incident.
-- **Honeypots**, pour observer les techniques utilisées par les attaquants.
+- **Honeypots**[^honeypot], pour observer les techniques utilisées par les attaquants.
 
 #### Méthodes d’analyse
 
 L’analyse de l’incident comprend plusieurs étapes :
 
 - **Collecte des preuves** : récupérer les journaux système, les fichiers compromis et les traces réseau.
-- **Identification de la cause** : déterminer si l’attaque provient d’une faille, d’un phishing, d’un compte compromis ou d’une menace interne.
+- **Identification de la cause** : déterminer si l’attaque provient d’une faille, d’un phishing[^phishing], d’un compte compromis ou d’une menace interne.
 - **Évaluation de l’impact** : identifier les systèmes touchés, les données compromises et les conséquences sur la continuité des activités.
 - **Attribution éventuelle** : tenter d’identifier l’origine de l’attaque (groupe criminel, État, hacktiviste).
 - **Documentation des actions** : enregistrer toutes les étapes de l’analyse afin d’assurer la traçabilité et la conformité juridique.
@@ -238,26 +238,6 @@ Une fois le confinement tenu :
 5. NIST — *SP 800-61 Rev. 3* (page officielle CSRC) : <https://csrc.nist.gov/pubs/sp/800/61/r3/final> — PDF : <https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-61r3.pdf>  
 6. CNIL — *Notification d’une violation de données personnelles* (RGPD art. 33, délai 72 h) : <https://www.cnil.fr/fr/services-en-ligne/notifier-une-violation-de-donnees-personnelles>
 
-#### Glossaire
-
-Les chiffres en exposant dans le texte renvoient aux définitions ci-dessous (cliquables dans le PDF).
-
-///Footnotes Go Here///
-
-[^cert-fr]: **CERT-FR** — Centre gouvernemental français de veille, d’alerte et de réponse aux attaques informatiques (rattaché à l’ANSSI). Il publie des fiches réflexes et peut accompagner les incidents majeurs.
-[^remediation]: **Remédiation** — Ensemble des actions visant à corriger un incident de sécurité : isoler les systèmes touchés, bloquer les accès compromis, appliquer des correctifs et ramener le SI vers un état sain.
-[^rssi]: **RSSI** (*Responsable de la Sécurité des Systèmes d’Information*) — Cadre chargé de piloter la politique de cybersécurité de l’organisation et de coordonner la réponse aux incidents.
-[^forensic]: **Analyse forensique** (ou *forensics*) — Investigation numérique visant à collecter, préserver et analyser des preuves (journaux, mémoire, disques) pour comprendre l’attaque sans altérer les traces.
-[^nist]: **NIST SP 800-61** — Publication du *National Institute of Standards and Technology* (États-Unis) sur la gestion des incidents de cybersécurité. La version actuelle est la **Rev. 3** (2025). Elle formalise notamment les logiques de **confinement**, d’**éradication** et de **récupération** dans la réponse à incident.
-[^fai]: **FAI** (*Fournisseur d’Accès à Internet*) — Opérateur qui fournit la connectivité Internet (et souvent le filtrage anti-DDoS en amont).
-[^cdn]: **CDN** (*Content Delivery Network*) — Réseau de serveurs répartis qui diffuse un site web plus près des utilisateurs et peut absorber / filtrer une partie du trafic d’attaque (dont le DDoS).
-[^waf]: **WAF** (*Web Application Firewall*) — Pare-feu applicatif qui filtre les requêtes HTTP malveillantes vers un site ou une API (injections, bots, etc.).
-[^airgap]: **Air-gap** (litt. « coupure d’air ») — Isolation forte d’un système, idéalement sans lien réseau avec Internet ou le reste du SI. Un *air-gap logique* désigne une isolation par segmentation très stricte.
-[^ot-it]: **OT / IT** — *Operational Technology* (systèmes industriels / métier, ex. gestion des trains) versus *Information Technology* (bureautique, serveurs, web). Les deux mondes doivent être cloisonnés.
-[^dpo]: **DPO** (*Data Protection Officer* / Délégué à la protection des données) — Responsable du respect du RGPD ; intervient notamment pour évaluer et notifier une violation de données à la CNIL.
-[^acl]: **ACL** (*Access Control List*) — Liste de règles qui autorise ou refuse le trafic réseau (ou des accès fichiers) selon des critères (IP, ports, utilisateurs…).
-[^psp]: **PSP** (*Payment Service Provider*) — Prestataire de services de paiement qui gère les transactions par carte bancaire pour le compte du marchand (ici, la billeterie).
-
 ### 5. Planifier la restauration et la communication
 
 #### Stratégie de restauration
@@ -267,7 +247,7 @@ La restauration doit être progressive afin d’éviter de remettre en productio
 L’ordre de priorité est le suivant :
 
 1. **Systèmes de gestion des trains** : ils sont prioritaires car ils concernent directement la sécurité des voyageurs. Les systèmes suspects sont isolés, puis restaurés depuis des sauvegardes saines. Des tests techniques et métier sont réalisés avant leur reconnexion au réseau.
-2. **Services d’infrastructure** : les réseaux, annuaires, systèmes d’authentification, DNS et outils de supervision doivent ensuite être rétablis pour permettre le fonctionnement sécurisé des autres services.
+2. **Services d’infrastructure** : les réseaux, annuaires, systèmes d’authentification, DNS[^dns] et outils de supervision doivent ensuite être rétablis pour permettre le fonctionnement sécurisé des autres services.
 3. **Information voyageurs** : un service simplifié doit permettre de consulter les horaires, retards et annulations, par exemple grâce à une page de secours indépendante.
 4. **Site web, application et billetterie** : le trafic DDoS est filtré avec l’aide de l’opérateur ou d’un prestataire spécialisé. Le site est remis en service progressivement, en commençant par la consultation, puis l’achat de billets.
 5. **Services internes et services administratifs** : ils sont restaurés selon leur importance pour l’activité.
@@ -285,3 +265,37 @@ En externe, les voyageurs sont informés par les réseaux sociaux officiels, les
 Concernant la possible fuite de données, l’entreprise ne doit pas confirmer les rumeurs avant la fin des premières investigations. Elle peut indiquer que les vérifications sont en cours. Si une fuite est confirmée, le DPO informe la CNIL dans les délais prévus et prévient les clients concernés en leur donnant les mesures de protection à appliquer.
 
 La fin de crise est annoncée lorsque les services essentiels sont rétablis, sécurisés et suffisamment stables.
+
+---
+
+## Glossaire
+
+Les chiffres en exposant dans le texte (ex. **1.1**, **2.1**, **4.3**) renvoient aux définitions ci-dessous. La première partie du numéro indique la question où le terme apparaît pour la première fois.
+
+///Footnotes Go Here///
+
+[^soc]: **SOC** (*Security Operations Center*) — Centre opérationnel de sécurité qui surveille en continu les alertes, analyse les incidents et coordonne la réponse technique.
+[^ddos]: **DDoS** (*Distributed Denial of Service*) — Attaque par déni de service distribué : un grand volume de requêtes provenant de nombreuses sources sature un service (site, serveur) pour le rendre inaccessible.
+[^rssi]: **RSSI** (*Responsable de la Sécurité des Systèmes d’Information*) — Cadre chargé de piloter la politique de cybersécurité de l’organisation et de coordonner la réponse aux incidents.
+[^dpo]: **DPO** (*Data Protection Officer* / Délégué à la protection des données) — Responsable du respect du RGPD ; intervient notamment pour évaluer et notifier une violation de données à la CNIL.
+[^anssi]: **ANSSI** — Agence nationale de la sécurité des systèmes d’information. Autorité nationale française en cybersécurité ; accompagne et oriente en cas d’incident majeur.
+[^cnil]: **CNIL** — Commission nationale de l’informatique et des libertés. Autorité de contrôle du RGPD en France ; doit être notifiée en cas de violation de données personnelles (art. 33).
+[^it]: **IT** (*Information Technology*) — Systèmes d’information « classiques » (serveurs, postes, applications métier, web), par opposition aux systèmes industriels (OT).
+[^rgpd]: **RGPD** — Règlement général sur la protection des données (UE). Impose notamment la notification à l’autorité (CNIL) sous **72 h** en cas de violation présentant un risque pour les personnes.
+[^firewall]: **Pare-feu (*firewall*)** — Équipement ou logiciel qui filtre le trafic réseau selon des règles (autoriser / refuser) pour protéger un SI.
+[^ids-ips]: **IDS / IPS** — *Intrusion Detection System* (détecte les intrusions) / *Intrusion Prevention System* (détecte et peut bloquer automatiquement certaines attaques).
+[^siem]: **SIEM** (*Security Information and Event Management*) — Plateforme qui centralise les journaux (logs) et détecte des corrélations / anomalies pour alerter le SOC.
+[^honeypot]: **Honeypot** — Leurre informatique (système ou service leurre) destiné à attirer les attaquants afin d’observer leurs techniques sans exposer le SI de production.
+[^phishing]: **Phishing** — Technique d’ingénierie sociale qui vise à tromper une victime (e-mail, SMS, site faux) pour lui soutirer des identifiants ou déployer un malware.
+[^cert-fr]: **CERT-FR** — Centre gouvernemental français de veille, d’alerte et de réponse aux attaques informatiques (rattaché à l’ANSSI). Il publie des fiches réflexes et peut accompagner les incidents majeurs.
+[^remediation]: **Remédiation** — Ensemble des actions visant à corriger un incident de sécurité : isoler les systèmes touchés, bloquer les accès compromis, appliquer des correctifs et ramener le SI vers un état sain.
+[^forensic]: **Analyse forensique** (ou *forensics*) — Investigation numérique visant à collecter, préserver et analyser des preuves (journaux, mémoire, disques) pour comprendre l’attaque sans altérer les traces.
+[^nist]: **NIST SP 800-61** — Publication du *National Institute of Standards and Technology* (États-Unis) sur la gestion des incidents de cybersécurité. La version actuelle est la **Rev. 3** (2025). Elle formalise notamment les logiques de **confinement**, d’**éradication** et de **récupération**.
+[^fai]: **FAI** (*Fournisseur d’Accès à Internet*) — Opérateur qui fournit la connectivité Internet (et souvent le filtrage anti-DDoS en amont).
+[^cdn]: **CDN** (*Content Delivery Network*) — Réseau de serveurs répartis qui diffuse un site web plus près des utilisateurs et peut absorber / filtrer une partie du trafic d’attaque (dont le DDoS).
+[^waf]: **WAF** (*Web Application Firewall*) — Pare-feu applicatif qui filtre les requêtes HTTP malveillantes vers un site ou une API (injections, bots, etc.).
+[^airgap]: **Air-gap** (litt. « coupure d’air ») — Isolation forte d’un système, idéalement sans lien réseau avec Internet ou le reste du SI. Un *air-gap logique* désigne une isolation par segmentation très stricte.
+[^ot-it]: **OT / IT** — *Operational Technology* (systèmes industriels / métier, ex. gestion des trains) versus *Information Technology* (bureautique, serveurs, web). Les deux mondes doivent être cloisonnés.
+[^acl]: **ACL** (*Access Control List*) — Liste de règles qui autorise ou refuse le trafic réseau (ou des accès fichiers) selon des critères (IP, ports, utilisateurs…).
+[^psp]: **PSP** (*Payment Service Provider*) — Prestataire de services de paiement qui gère les transactions par carte bancaire pour le compte du marchand (ici, la billeterie).
+[^dns]: **DNS** (*Domain Name System*) — Service qui traduit les noms de domaine (ex. billetterie.exemple.fr) en adresses IP ; critique pour le fonctionnement des sites et applications.
