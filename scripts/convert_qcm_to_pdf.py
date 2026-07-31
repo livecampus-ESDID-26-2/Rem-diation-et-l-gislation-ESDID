@@ -638,6 +638,10 @@ def md_to_html(
     body = markdown.markdown(
         body_src,
         extensions=["extra", "sane_lists", "smarty"],
+        extension_configs={
+            # Numéros = ordre des définitions (alignées sur l’ordre d’apparition dans le texte)
+            "footnotes": {"USE_DEFINITION_ORDER": True},
+        },
         output_format="html5",
     )
     # base_dir = dossier du markdown (mini-cas/ ou qcm/) pour résoudre les images relatives

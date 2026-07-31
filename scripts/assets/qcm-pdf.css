@@ -625,3 +625,53 @@ p:has(> em:only-child) {
   color: var(--muted);
   margin: 0 0 1.1em;
 }
+
+/* Notes / glossaire (cliquables : exposant → définition) */
+sup a.footnote-ref {
+  font-size: 0.75em;
+  font-weight: 700;
+  color: var(--lc-blue);
+  text-decoration: none;
+  margin-left: 0.05em;
+}
+
+sup a.footnote-ref:hover {
+  text-decoration: underline;
+}
+
+div.footnote {
+  margin-top: 0.5em;
+  padding: 0.65em 0.75em 0.5em;
+  border: 1px solid rgba(59, 164, 224, 0.28);
+  border-radius: 8px;
+  background: rgba(59, 164, 224, 0.05);
+  font-size: 8.5pt;
+  line-height: 1.45;
+  color: #334155;
+  page-break-inside: avoid;
+}
+
+div.footnote hr {
+  display: none;
+}
+
+div.footnote ol {
+  padding-left: 1.35em;
+  margin: 0.25em 0 0;
+}
+
+div.footnote li {
+  margin: 0.4em 0;
+  text-align: left;
+}
+
+div.footnote li p {
+  margin: 0.1em 0;
+  text-align: left;
+}
+
+div.footnote .footnote-backref {
+  color: var(--lc-blue);
+  text-decoration: none;
+  margin-left: 0.2em;
+}
