@@ -22,14 +22,20 @@
 
 ### Contexte
 
-Une entreprise d’e-commerce française, spécialisée dans la vente de matériel électronique, a récemment subi une cyberattaque.
+À l’été **2026**, la **Direction générale des Finances publiques (DGFiP)**, dont dépend le site **impots.gouv.fr**, a été confrontée à une cyberattaque majeure par **accès illégitimes** à son système d’information.
 
-- Un **rançongiciel** a paralysé son site de vente en ligne pendant **48 heures**.
-- Une partie de la **base de données clients** (adresses, numéros de téléphone, mais **pas** les données bancaires) a été compromise.
-- La **communication externe** a été confuse : certains clients ont appris l’incident par les **réseaux sociaux** avant de recevoir une information officielle.
-- La direction souhaite à la fois **tirer les leçons** de cet incident et mettre en place un **exercice de simulation de crise** pour se préparer à de futurs scénarios.
+Les faits connus sont les suivants :
 
-Votre mission est de proposer une **analyse post-incident** et de concevoir un **plan de simulation de crise** adapté.
+- entre **juin et juillet 2026**, des attaquants ont obtenu des accès frauduleux en **usurpant des identifiants** d’agents (et/ou de tiers habilités), permettant la **consultation et l’extraction** de données ;
+- le **12–13 août 2026**, un acteur malveillant a **revendiqué** le vol de données ; la DGFiP a alors confirmé l’ampleur de l’exfiltration ;
+- environ **678 000** particuliers et professionnels sont concernés (dont ~**350 000** particuliers et ~**250 000** professionnels), avec notamment des **données fiscales** (revenu fiscal de référence, quotient familial, taux de prélèvement à la source, etc.) et des **données cadastrales** ;
+- le site **impots.gouv.fr** et les **espaces usagers** (particuliers / professionnels) n’ont **pas** été compromis : les identifiants et mots de passe des contribuables n’ont pas été volés ;
+- la **communication publique** a été critiquée : une partie du public a découvert l’affaire via la revendication / les médias avant une information officielle claire ; le gouvernement a ensuite présenté des **excuses**, saisi la **CNIL**, déposé plainte et réuni une **cellule de crise** ;
+- la direction (administration / tutelle) souhaite à la fois **tirer les leçons** de cet incident et mettre en place un **exercice de simulation de crise** pour se préparer à de futurs scénarios.
+
+Votre mission est de proposer une **analyse post-incident** et de concevoir un **plan de simulation de crise** adapté à ce contexte institutionnel.
+
+*Sources d’actualité (pour le contexte) :* [impots.gouv.fr](https://www.impots.gouv.fr/actualite/vol-de-donnees-suite-des-acces-illegitimes-au-systeme-dinformation-de-la-dgfip) · [communiqué ministère](https://presse.economie.gouv.fr/?p=182374)
 
 ---
 
