@@ -60,10 +60,11 @@ cours/       → supports de cours (chapitres)
 qcm/         → quiz individuels (brouillons Markdown)
 mini-cas/    → mini-cas de groupe (brouillons Markdown)
 pdf/         → livrables PDF générés
-scripts/     → outils (conversion MD → PDF)
+docs/        → mini-app HTML (bibliothèque + pages statiques)
+scripts/     → outils (conversion MD → PDF / HTML)
 ```
 
-## Génération des PDF (quiz)
+## Génération des PDF et de la mini-app
 
 Depuis la racine du projet :
 
@@ -71,10 +72,41 @@ Depuis la racine du projet :
 ./scripts/convert_qcm_to_pdf.sh
 ```
 
-Le script crée le dossier `pdf/` et convertit **tous** les `.md` de `qcm/` **et** `mini-cas/` en PDF A4 professionnels (via Google Chrome headless + feuille de style académique).
+Le script :
+
+1. Convertit **tous** les `.md` de `qcm/` et `mini-cas/` en PDF A4 (`pdf/`)
+2. Génère aussi des **pages HTML uniques** (même style CSS que le PDF) pour :
+   - `cours/`
+   - `qcm/`
+   - `mini-cas/`
+3. Met à jour `docs/manifest.json` et la bibliothèque `docs/index.html`
+4. Crée un fichier `EMAIL_*.txt` prêt à envoyer à **M. AUMAGY Yannick** (`y.aumagy@gmail.com`)
+
+Options :
+
+```bash
+./scripts/convert_qcm_to_pdf.sh --html-only   # mini-app seulement (pas besoin de Chrome)
+./scripts/convert_qcm_to_pdf.sh --pdf-only    # PDF seulement
+```
+
+Prévisualisation locale :
+
+```bash
+python3 -m http.server 8000 --directory docs
+```
+
+Puis ouvrir [http://localhost:8000](http://localhost:8000).
 
 Pour un mini-cas de groupe, les photos des membres sont prises automatiquement dans `images/` (`prenom_nom.png`).
 
-Il génère aussi un fichier `EMAIL_*.txt` prêt à copier-coller pour envoyer le livrable à **M. AUMAGY Yannick** (`y.aumagy@gmail.com`).
+Prérequis PDF : Google Chrome (ou Chromium / Edge) installé sur macOS.
 
-Prérequis : Google Chrome (ou Chromium / Edge) installé sur macOS.
+## Publier la mini-app sur GitHub Pages
+
+1. Pousser le dépôt sur GitHub (avec le dossier `docs/` généré).
+2. Sur GitHub : **Settings → Pages**.
+3. Source : **Deploy from a branch**.
+4. Branch : `main` (ou `master`), dossier **/docs**.
+5. Enregistrer ; l’URL sera du type `https://<user>.github.io/<repo>/`.
+
+Après chaque modification de cours / quiz / mini-cas : relancer le script, committer `docs/`, puis pousser.

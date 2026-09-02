@@ -1,0 +1,99 @@
+{
+  "title": "Remédiation et Législation",
+  "generated": "2026-09-02",
+  "categories": [
+    {
+      "id": "cours",
+      "label": "Cours",
+      "items": [
+        {
+          "id": "chapitre-1-le-contexte-de-la-cybersecurite-en-france",
+          "title": "Chapitre 1 – Le contexte de la cybersécurité en France",
+          "path": "pages/cours/chapitre-1-le-contexte-de-la-cybersecurite-en-france.html"
+        },
+        {
+          "id": "chapitre-2-comprendre-la-menace-cyber",
+          "title": "Chapitre 2 – Comprendre la menace cyber",
+          "path": "pages/cours/chapitre-2-comprendre-la-menace-cyber.html"
+        },
+        {
+          "id": "chapitre-3-approche-strategique-cybersecurite",
+          "title": "Chapitre 3 – Approche stratégique de la cybersécurité",
+          "path": "pages/cours/chapitre-3-approche-strategique-cybersecurite.html"
+        },
+        {
+          "id": "chapitre-4-gestion-de-crise-et-coordination-strategique",
+          "title": "Chapitre 4 – Gestion de crise et coordination stratégique",
+          "path": "pages/cours/chapitre-4-gestion-de-crise-et-coordination-strategique.html"
+        },
+        {
+          "id": "chapitre-5-detection-et-analyse-des-cyberattaques",
+          "title": "Chapitre 5 – Détection et analyse des cyberattaques",
+          "path": "pages/cours/chapitre-5-detection-et-analyse-des-cyberattaques.html"
+        },
+        {
+          "id": "chapitre-6-reponse-aux-incidents-de-securite",
+          "title": "Chapitre 6 – Réponse aux incidents de sécurité",
+          "path": "pages/cours/chapitre-6-reponse-aux-incidents-de-securite.html"
+        },
+        {
+          "id": "chapitre-7-post-mortem-et-retour-d-experience",
+          "title": "Chapitre 7 – Post-mortem et retour d’expérience",
+          "path": "pages/cours/chapitre-7-post-mortem-et-retour-d-experience.html"
+        },
+        {
+          "id": "chapitre-8-etudes-de-cas-reels",
+          "title": "Chapitre 8 – Études de cas réels",
+          "path": "pages/cours/chapitre-8-etudes-de-cas-reels.html"
+        },
+        {
+          "id": "chapitre-9-simulation-de-crise-cyber",
+          "title": "Chapitre 9 – Simulation de crise cyber",
+          "path": "pages/cours/chapitre-9-simulation-de-crise-cyber.html"
+        }
+      ]
+    },
+    {
+      "id": "qcm",
+      "label": "Quiz",
+      "items": [
+        {
+          "id": "REMEDIATION_ET_LEGISLATION_MASIA_ANTOINE_QUIZ_N1",
+          "title": "QUIZ N1",
+          "path": "pages/qcm/REMEDIATION_ET_LEGISLATION_MASIA_ANTOINE_QUIZ_N1.html"
+        },
+        {
+          "id": "REMEDIATION_ET_LEGISLATION_MASIA_ANTOINE_QUIZ_N2",
+          "title": "QUIZ N2",
+          "path": "pages/qcm/REMEDIATION_ET_LEGISLATION_MASIA_ANTOINE_QUIZ_N2.html"
+        }
+      ]
+    },
+    {
+      "id": "mini-cas",
+      "label": "Mini-cas",
+      "items": [
+        {
+          "id": "REMEDIATION_ET_LEGISLATION_BADET_LEBLOND_LOURENCO_MASIA_MINI_CAS_1_G1",
+          "title": "MINI CAS 1",
+          "path": "pages/mini-cas/REMEDIATION_ET_LEGISLATION_BADET_LEBLOND_LOURENCO_MASIA_MINI_CAS_1_G1.html"
+        },
+        {
+          "id": "REMEDIATION_ET_LEGISLATION_BADET_LEBLOND_LOURENCO_MASIA_MINI_CAS_2_G1",
+          "title": "MINI CAS 2",
+          "path": "pages/mini-cas/REMEDIATION_ET_LEGISLATION_BADET_LEBLOND_LOURENCO_MASIA_MINI_CAS_2_G1.html"
+        },
+        {
+          "id": "REMEDIATION_ET_LEGISLATION_BADET_LEBLOND_LOURENCO_MASIA_MINI_CAS_3_G1",
+          "title": "MINI CAS 3",
+          "path": "pages/mini-cas/REMEDIATION_ET_LEGISLATION_BADET_LEBLOND_LOURENCO_MASIA_MINI_CAS_3_G1.html"
+        },
+        {
+          "id": "REMEDIATION_ET_LEGISLATION_BADET_LEBLOND_LOURENCO_MASIA_MINI_CAS_4_G1",
+          "title": "MINI CAS 4",
+          "path": "pages/mini-cas/REMEDIATION_ET_LEGISLATION_BADET_LEBLOND_LOURENCO_MASIA_MINI_CAS_4_G1.html"
+        }
+      ]
+    }
+  ]
+}

@@ -1,31 +1,53 @@
 #!/usr/bin/env python3
 """
-Convertit les fichiers Markdown de qcm/ et mini-cas/ en PDF professionnels (dossier pdf/).
-Utilise Google Chrome en mode headless pour un rendu typographique propre.
+Convertit les Markdown (qcm/, mini-cas/, cours/) en PDF et/ou pages HTML statiques.
+
+- PDF  → dossier pdf/ (Chrome headless, style académique)
+- HTML → docs/pages/ + docs/manifest.json (mini-app GitHub Pages)
 """
 
 from __future__ import annotations
 
+import argparse
 import base64
 import html
+import json
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
 import unicodedata
+from datetime import date
 from pathlib import Path
+from typing import Callable
 
 ROOT = Path(__file__).resolve().parent.parent
 SOURCE_DIRS = [ROOT / "qcm", ROOT / "mini-cas"]
+COURSE_DIR = ROOT / "cours"
 PDF_DIR = ROOT / "pdf"
 IMAGES_DIR = ROOT / "images"
 CSS_FILE = ROOT / "scripts" / "assets" / "qcm-pdf.css"
 VENDOR_DIR = ROOT / "scripts" / ".vendor"
 LOGO_FILE = IMAGES_DIR / "logo-livecampus.png"
 PROFILE_FILE = IMAGES_DIR / "antoine_masia.png"
+WEB_DIR = ROOT / "docs"
+WEB_ASSETS = WEB_DIR / "assets"
+WEB_IMAGES = WEB_ASSETS / "images"
+WEB_PAGES = WEB_DIR / "pages"
+WEB_DOC_CSS = WEB_ASSETS / "doc.css"
+WEB_DOC_SCREEN_CSS = WEB_ASSETS / "doc-web.css"
 EMAIL_TO = "y.aumagy@gmail.com"
 EMAIL_TO_NAME = "M. AUMAGY Yannick"
 EMAIL_FROM_NAME = "Antoine MASIA"
+
+CATEGORY_LABELS = {
+    "cours": "Cours",
+    "qcm": "Quiz",
+    "mini-cas": "Mini-cas",
+}
+
+UriResolver = Callable[..., str]
 
 CHROME_CANDIDATES = [
     Path("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"),
@@ -283,13 +305,60 @@ def strip_cover_meta_from_markdown(md_text: str) -> str:
     return md_text[match.start() :].lstrip()
 
 
-def build_cover_page(meta: dict, logo_uri: str, profile_uri: str) -> str:
+def web_image_uri(path: Path, **_kwargs: object) -> str:
+    """Copie une image vers docs/assets/images/ et renvoie le chemin relatif depuis pages/*/*."""
+    WEB_IMAGES.mkdir(parents=True, exist_ok=True)
+    dest = WEB_IMAGES / path.name
+    if not dest.is_file() or dest.stat().st_mtime < path.stat().st_mtime:
+        shutil.copy2(path, dest)
+    return f"../../assets/images/{path.name}"
+
+
+def extract_course_chapter(md_text: str) -> str:
+    match = re.search(r"^##\s+(.+)$", md_text, re.MULTILINE)
+    if not match:
+        return ""
+    title = match.group(1).strip()
+    return re.sub(r"\*\*(.+?)\*\*", r"\1", title)
+
+
+def strip_course_h1(md_text: str) -> str:
+    """Retire le H1 global du cours (affiché dans l’en-tête HTML)."""
+    return re.sub(r"^#\s+.+\n+", "", md_text, count=1, flags=re.MULTILINE).lstrip()
+
+
+def build_course_header(meta: dict, chapter: str, logo_uri: str) -> str:
+    cours = meta.get("title") or "Remédiation et Législation"
+    return f"""
+<header class="doc-header">
+  <div class="doc-header__brand">
+    <img class="doc-header__logo" src="{logo_uri}" alt="Livecampus" />
+    <div class="doc-header__meta">
+      <p class="school">Livecampus</p>
+      <p class="doc-title">{html.escape(cours)}</p>
+      <p class="doc-sub">{html.escape(chapter or "Support de cours")}</p>
+    </div>
+  </div>
+</header>
+"""
+
+
+def build_cover_page(
+    meta: dict,
+    logo_uri: str,
+    profile_uri: str,
+    *,
+    uri_for_path: UriResolver | None = None,
+) -> str:
     """Page de garde complète : école, cours, professeur, membres."""
+    resolve = uri_for_path or file_to_data_uri
     members = meta.get("members") or []
     cards = []
     for name in members:
         photo = find_member_photo(name)
-        photo_uri = file_to_data_uri(photo, max_side=360, jpeg_quality=90) if photo else profile_uri
+        photo_uri = (
+            resolve(photo, max_side=360, jpeg_quality=90) if photo else profile_uri
+        )
         cards.append(
             f"""
             <article class="cover-card">
@@ -341,9 +410,22 @@ def build_cover_page(meta: dict, logo_uri: str, profile_uri: str) -> str:
 """
 
 
-def build_header(meta: dict, logo_uri: str, profile_uri: str) -> str:
+def build_header(
+    meta: dict,
+    logo_uri: str,
+    profile_uri: str,
+    *,
+    doc_kind: str = "livrable",
+    chapter: str = "",
+    uri_for_path: UriResolver | None = None,
+) -> str:
+    if doc_kind == "cours":
+        return build_course_header(meta, chapter, logo_uri)
+
     if is_group_doc(meta):
-        return build_cover_page(meta, logo_uri, profile_uri)
+        return build_cover_page(
+            meta, logo_uri, profile_uri, uri_for_path=uri_for_path
+        )
 
     subtitle_bits = [meta["livrable"]]
     if meta["chapitres"]:
@@ -468,12 +550,19 @@ def inject_heading_ids(html_body: str, entries: list[dict]) -> str:
     return result
 
 
-def embed_local_images(html_body: str, base_dir: Path) -> str:
-    """Remplace les <img src=\"...\"> locaux par des data-URI."""
+def embed_local_images(
+    html_body: str,
+    base_dir: Path,
+    *,
+    mode: str = "data",
+) -> str:
+    """Remplace les <img src=\"...\"> locaux par data-URI (PDF) ou chemins web."""
 
     def replacer(match: re.Match[str]) -> str:
         prefix, src, suffix = match.group(1), match.group(2), match.group(3)
         if src.startswith("data:") or src.startswith("http://") or src.startswith("https://"):
+            return match.group(0)
+        if src.startswith("../../assets/"):
             return match.group(0)
         path = (base_dir / src).resolve()
         if not path.is_file():
@@ -490,6 +579,16 @@ def embed_local_images(html_body: str, base_dir: Path) -> str:
                 else:
                     return match.group(0)
         try:
+            if mode == "web":
+                uri = web_image_uri(path)
+                tag = f"{prefix}{uri}{suffix}"
+                if is_diagram_image(path):
+                    if 'class="' in tag:
+                        tag = tag.replace('class="', 'class="doc-schema ', 1)
+                    else:
+                        tag = tag.replace("<img", '<img class="doc-schema"', 1)
+                return tag
+
             # Schémas : pleine résolution (plafond haut) + PNG
             # Photos MD : un peu plus larges qu’avant
             if is_diagram_image(path):
@@ -705,12 +804,23 @@ def md_to_html(
     *,
     include_sommaire: bool = True,
     sommaire_entries: list[dict] | None = None,
+    doc_kind: str = "livrable",
+    for_web: bool = False,
+    uri_for_path: UriResolver | None = None,
 ) -> str:
     import markdown
 
     meta = extract_meta(md_text)
-    group = is_group_doc(meta)
-    body_src = strip_cover_meta_from_markdown(md_text) if group else md_text
+    group = is_group_doc(meta) and doc_kind != "cours"
+    chapter = extract_course_chapter(md_text) if doc_kind == "cours" else ""
+
+    if doc_kind == "cours":
+        body_src = strip_course_h1(md_text)
+    elif group:
+        body_src = strip_cover_meta_from_markdown(md_text)
+    else:
+        body_src = md_text
+
     body = markdown.markdown(
         body_src,
         extensions=["extra", "sane_lists", "smarty"],
@@ -721,11 +831,18 @@ def md_to_html(
     )
     # base_dir = dossier du markdown (mini-cas/ ou qcm/) pour résoudre les images relatives
     # On passe IMAGES_DIR via les chemins relatifs du md
-    body = embed_local_images(body, ROOT)
+    body = embed_local_images(body, ROOT, mode="web" if for_web else "data")
     body = wrap_keep_together_blocks(body)
     body = insert_question_page_breaks(body)
     body = apply_section_footnote_labels(body)
-    header = build_header(meta, logo_uri, profile_uri)
+    header = build_header(
+        meta,
+        logo_uri,
+        profile_uri,
+        doc_kind=doc_kind,
+        chapter=chapter,
+        uri_for_path=uri_for_path,
+    )
 
     sommaire = ""
     if group:
@@ -737,20 +854,36 @@ def md_to_html(
     footer_right = (
         f"Groupe {meta['groupe']} — {meta['livrable']}"
         if meta.get("groupe")
-        else f"{meta['student']} — {meta['livrable']}"
+        else (
+            chapter
+            if doc_kind == "cours"
+            else f"{meta['student']} — {meta['livrable']}"
+        )
     )
+
+    body_class = "qcm-doc web-doc" if for_web else "qcm-doc"
+    back_link = ""
+    style_block = f"<style>\n{css}\n  </style>"
+    if for_web:
+        style_block = """<link rel="stylesheet" href="../../assets/doc.css" />
+  <link rel="stylesheet" href="../../assets/doc-web.css" />"""
+        back_link = (
+            '<p class="web-back">'
+            '<a href="../../index.html" target="_top">← Retour à la bibliothèque</a>'
+            "</p>"
+        )
 
     return f"""<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{html.escape(title)}</title>
-  <style>
-{css}
-  </style>
+  {style_block}
 </head>
-<body class="qcm-doc">
+<body class="{body_class}">
 <div class="doc-wrap">
+{back_link}
 {header}
 {sommaire}
 {body}
@@ -894,9 +1027,123 @@ def collect_markdown_files() -> list[Path]:
     return files
 
 
-def convert_all() -> None:
+def collect_course_files() -> list[Path]:
+    if not COURSE_DIR.is_dir():
+        return []
+    return sorted(COURSE_DIR.glob("*.md"))
+
+
+def prepare_web_assets() -> None:
+    WEB_DIR.mkdir(parents=True, exist_ok=True)
+    WEB_ASSETS.mkdir(parents=True, exist_ok=True)
+    WEB_IMAGES.mkdir(parents=True, exist_ok=True)
+    WEB_PAGES.mkdir(parents=True, exist_ok=True)
+    for category in CATEGORY_LABELS:
+        (WEB_PAGES / category).mkdir(parents=True, exist_ok=True)
+
+    shutil.copy2(CSS_FILE, WEB_DOC_CSS)
+    if not WEB_DOC_SCREEN_CSS.is_file():
+        raise FileNotFoundError(
+            f"CSS web introuvable : {WEB_DOC_SCREEN_CSS} "
+            "(attendu dans docs/assets/doc-web.css)"
+        )
+
+    if IMAGES_DIR.is_dir():
+        for img in IMAGES_DIR.iterdir():
+            if img.suffix.lower() in {".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg"}:
+                dest = WEB_IMAGES / img.name
+                if not dest.is_file() or dest.stat().st_mtime < img.stat().st_mtime:
+                    shutil.copy2(img, dest)
+
+
+def manifest_item_title(md_text: str, meta: dict, category: str, stem: str) -> str:
+    if category == "cours":
+        return extract_course_chapter(md_text) or stem
+    livrable = str(meta.get("livrable") or "").strip()
+    if livrable:
+        return livrable
+    return meta.get("title") or stem
+
+
+def write_web_document(
+    *,
+    md_text: str,
+    css: str,
+    category: str,
+    stem: str,
+    logo_uri: str,
+    profile_uri: str,
+    doc_kind: str,
+) -> dict:
+    meta = extract_meta(md_text)
+    title = manifest_item_title(md_text, meta, category, stem)
+    page_title = f"{title} — Remédiation et Législation"
+
+    sommaire_entries = None
+    if is_group_doc(meta) and doc_kind != "cours":
+        sommaire_entries = extract_sommaire_entries(
+            strip_cover_meta_from_markdown(md_text)
+        )
+
+    html_doc = md_to_html(
+        md_text,
+        css,
+        page_title,
+        logo_uri,
+        profile_uri,
+        include_sommaire=True,
+        sommaire_entries=sommaire_entries,
+        doc_kind=doc_kind,
+        for_web=True,
+        uri_for_path=web_image_uri,
+    )
+    out_dir = WEB_PAGES / category
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out_path = out_dir / f"{stem}.html"
+    out_path.write_text(html_doc, encoding="utf-8")
+
+    return {
+        "id": stem,
+        "title": title,
+        "path": f"pages/{category}/{stem}.html",
+        "category": category,
+    }
+
+
+def write_manifest(items: list[dict]) -> Path:
+    categories = []
+    for cat_id, label in CATEGORY_LABELS.items():
+        cat_items = [i for i in items if i["category"] == cat_id]
+        if cat_id == "cours":
+            cat_items.sort(key=lambda x: x["id"])
+        else:
+            cat_items.sort(key=lambda x: x["title"].lower())
+        categories.append(
+            {
+                "id": cat_id,
+                "label": label,
+                "items": [
+                    {"id": i["id"], "title": i["title"], "path": i["path"]}
+                    for i in cat_items
+                ],
+            }
+        )
+
+    payload = {
+        "title": "Remédiation et Législation",
+        "generated": date.today().isoformat(),
+        "categories": categories,
+    }
+    out = WEB_DIR / "manifest.json"
+    out.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    return out
+
+
+def convert_all(*, make_pdf: bool = True, make_html: bool = True) -> None:
     ensure_markdown()
-    chrome = find_chrome()
     css = CSS_FILE.read_text(encoding="utf-8")
 
     if not LOGO_FILE.is_file():
@@ -904,21 +1151,42 @@ def convert_all() -> None:
     if not PROFILE_FILE.is_file():
         raise FileNotFoundError(f"Photo de profil introuvable : {PROFILE_FILE}")
 
-    logo_uri = file_to_data_uri(LOGO_FILE, max_side=512)
-    profile_uri = file_to_data_uri(PROFILE_FILE, max_side=360, jpeg_quality=90)
+    chrome = find_chrome() if make_pdf else None
+    logo_data_uri = file_to_data_uri(LOGO_FILE, max_side=512)
+    profile_data_uri = file_to_data_uri(PROFILE_FILE, max_side=360, jpeg_quality=90)
+    logo_web_uri = web_image_uri(LOGO_FILE) if make_html else ""
+    profile_web_uri = web_image_uri(PROFILE_FILE) if make_html else ""
 
-    PDF_DIR.mkdir(parents=True, exist_ok=True)
+    if make_html:
+        prepare_web_assets()
+        # Re-resolve after prepare (files copied)
+        logo_web_uri = web_image_uri(LOGO_FILE)
+        profile_web_uri = web_image_uri(PROFILE_FILE)
+
+    if make_pdf:
+        PDF_DIR.mkdir(parents=True, exist_ok=True)
+
     md_files = collect_markdown_files()
+    course_files = collect_course_files()
+    manifest_items: list[dict] = []
 
-    if not md_files:
-        print("Aucun fichier .md trouvé dans qcm/ ou mini-cas/")
+    if make_pdf and not md_files:
+        print("Aucun fichier .md trouvé dans qcm/ ou mini-cas/ pour les PDF")
+    if make_html and not md_files and not course_files:
+        print("Aucun Markdown à publier en HTML")
         return
 
-    print(f"→ Conversion de {len(md_files)} fichier(s) Markdown → PDF")
-    print(f"  Sources : qcm/ + mini-cas/")
-    print(f"  Sortie  : {PDF_DIR}")
-    print(f"  Moteur  : {chrome.name}")
-    print()
+    if make_pdf:
+        print(f"→ Conversion PDF de {len(md_files)} fichier(s) (qcm/ + mini-cas/)")
+        print(f"  Sortie  : {PDF_DIR}")
+        print(f"  Moteur  : {chrome.name if chrome else '—'}")
+        print()
+
+    if make_html:
+        total_html = len(md_files) + len(course_files)
+        print(f"→ Génération HTML de {total_html} page(s) (cours/ + qcm/ + mini-cas/)")
+        print(f"  Sortie  : {WEB_PAGES}")
+        print()
 
     with tempfile.TemporaryDirectory(prefix="livrables-pdf-") as tmp:
         tmp_dir = Path(tmp)
@@ -931,9 +1199,28 @@ def convert_all() -> None:
                 if is_group_doc(meta)
                 else title
             )
+            origin = md_path.parent.name
+            category = origin if origin in CATEGORY_LABELS else "qcm"
+
+            if make_html:
+                item = write_web_document(
+                    md_text=md_text,
+                    css=css,
+                    category=category,
+                    stem=pdf_stem,
+                    logo_uri=logo_web_uri,
+                    profile_uri=profile_web_uri,
+                    doc_kind="livrable",
+                )
+                manifest_items.append(item)
+                print(f"  ✓ [html/{category}] {item['path']}")
+
+            if not make_pdf:
+                continue
+
+            assert chrome is not None
             out_pdf = PDF_DIR / f"{pdf_stem}.pdf"
             html_path = tmp_dir / f"{pdf_stem}.html"
-            origin = md_path.parent.name
 
             if is_group_doc(meta):
                 body_src = strip_cover_meta_from_markdown(md_text)
@@ -945,8 +1232,8 @@ def convert_all() -> None:
                     md_text,
                     css,
                     pdf_stem,
-                    logo_uri,
-                    profile_uri,
+                    logo_data_uri,
+                    profile_data_uri,
                     include_sommaire=False,
                     sommaire_entries=entries,
                 )
@@ -960,35 +1247,81 @@ def convert_all() -> None:
                     md_text,
                     css,
                     pdf_stem,
-                    logo_uri,
-                    profile_uri,
+                    logo_data_uri,
+                    profile_data_uri,
                     include_sommaire=True,
                     sommaire_entries=entries,
                 )
                 html_path.write_text(html_final, encoding="utf-8")
                 chrome_print_pdf(chrome, html_path, out_pdf, number_pages=True)
             else:
-                html_doc = md_to_html(md_text, css, pdf_stem, logo_uri, profile_uri)
+                html_doc = md_to_html(
+                    md_text, css, pdf_stem, logo_data_uri, profile_data_uri
+                )
                 html_path.write_text(html_doc, encoding="utf-8")
                 chrome_print_pdf(chrome, html_path, out_pdf, number_pages=True)
 
             size_kb = out_pdf.stat().st_size / 1024
-            print(f"  ✓ [{origin}] {out_pdf.name} ({size_kb:.0f} Ko)")
+            print(f"  ✓ [pdf/{origin}] {out_pdf.name} ({size_kb:.0f} Ko)")
 
             email_path = write_email_draft(meta, out_pdf)
             print(f"  ✓ {email_path.name} (mail prêt à coller)")
 
+    if make_html:
+        for md_path in course_files:
+            md_text = md_path.read_text(encoding="utf-8")
+            item = write_web_document(
+                md_text=md_text,
+                css=css,
+                category="cours",
+                stem=md_path.stem,
+                logo_uri=logo_web_uri,
+                profile_uri=profile_web_uri,
+                doc_kind="cours",
+            )
+            manifest_items.append(item)
+            print(f"  ✓ [html/cours] {item['path']}")
+
+        manifest_path = write_manifest(manifest_items)
+        print(f"  ✓ {manifest_path.relative_to(ROOT)}")
+
     print()
-    print(f"✓ Terminé. PDF disponibles dans : {PDF_DIR}")
+    if make_pdf:
+        print(f"✓ PDF disponibles dans : {PDF_DIR}")
+    if make_html:
+        print(f"✓ Mini-app HTML disponible dans : {WEB_DIR}")
+        print("  Ouvrir localement : docs/index.html (ou via un serveur statique)")
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(
+        description="Génère les PDF et/ou les pages HTML de la mini-app."
+    )
+    parser.add_argument(
+        "--html-only",
+        action="store_true",
+        help="Génère uniquement docs/ (pas de PDF / Chrome)",
+    )
+    parser.add_argument(
+        "--pdf-only",
+        action="store_true",
+        help="Génère uniquement les PDF (pas de mini-app HTML)",
+    )
+    args = parser.parse_args()
+
+    if args.html_only and args.pdf_only:
+        print("Options incompatibles : --html-only et --pdf-only", file=sys.stderr)
+        return 1
+
     if not CSS_FILE.is_file():
         print(f"Erreur : CSS introuvable ({CSS_FILE})", file=sys.stderr)
         return 1
 
+    make_pdf = not args.html_only
+    make_html = not args.pdf_only
+
     try:
-        convert_all()
+        convert_all(make_pdf=make_pdf, make_html=make_html)
     except subprocess.CalledProcessError as exc:
         print("Erreur lors de la génération PDF :", file=sys.stderr)
         print(exc.stderr or exc.stdout or exc, file=sys.stderr)
