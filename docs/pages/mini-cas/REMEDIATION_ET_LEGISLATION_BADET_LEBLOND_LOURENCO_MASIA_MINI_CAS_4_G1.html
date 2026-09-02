@@ -216,164 +216,97 @@
 </table>
 <p>Cette cotation est une première estimation. Elle devra être confirmée à partir des résultats détaillés de l’audit, de l’architecture technique, de la nature exacte des données et des engagements contractuels.</p>
 </div><div class="keep-together"><h4>1.2. Tableau des risques hiérarchisé</h4>
+<p>Le tableau suivant présente les <strong>cinq risques prioritaires</strong>. Ils ont été retenus en raison de leur criticité et de leur lien direct avec les éléments constatés dans le cas.</p>
 <table>
 <thead>
 <tr>
-<th>Rang</th>
-<th>Risque principal</th>
-<th>Catégorie</th>
-<th>Probabilité</th>
-<th>Gravité</th>
+<th>N°</th>
+<th>Risque synthétique</th>
+<th>P</th>
+<th>G</th>
 <th>Criticité</th>
-<th>Conséquences potentielles</th>
-<th>Acceptable avant la mise en production ?</th>
+<th>Acceptable ?</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>1</td>
-<td><strong>Exploitation des vulnérabilités importantes présentes sur les serveurs exposés à Internet</strong></td>
-<td>Technique</td>
-<td>4 — Très élevée</td>
-<td>4 — Critique</td>
+<td>Vulnérabilités sur les serveurs Internet</td>
+<td>4</td>
+<td>4</td>
 <td><strong>16 — Critique</strong></td>
-<td>Intrusion, exécution de code, compromission de comptes, vol ou modification de documents, indisponibilité de la plateforme, propagation dans le système d’information et atteinte à l’image de l’entreprise.</td>
-<td><strong>Non.</strong> Les vulnérabilités critiques ou importantes exploitables doivent être corrigées ou isolées, puis faire l’objet de tests de non-régression et d’un nouveau contrôle de sécurité.</td>
+<td><strong>Non</strong></td>
 </tr>
 <tr>
 <td>2</td>
-<td><strong>Compromission par les comptes administrateurs permanents du prestataire</strong></td>
-<td>Prestataire / technique</td>
-<td>4 — Très élevée</td>
-<td>4 — Critique</td>
+<td>Comptes administrateurs permanents du prestataire</td>
+<td>4</td>
+<td>4</td>
 <td><strong>16 — Critique</strong></td>
-<td>Utilisation abusive ou détournement d’un compte privilégié, élévation de privilèges, désactivation des protections, accès massif aux données, sabotage ou difficulté à attribuer les actions réalisées.</td>
-<td><strong>Non.</strong> Les accès permanents doivent être supprimés au profit d’accès nominatifs, temporaires, limités, authentifiés par MFA<sup id="fnref:mfa"><a class="footnote-ref" href="#fn:mfa">1.1</a></sup> et intégralement journalisés.</td>
+<td><strong>Non</strong></td>
 </tr>
 <tr>
 <td>3</td>
-<td><strong>Intrusion potentiellement déjà en cours, révélée par les connexions inhabituelles depuis l’étranger</strong></td>
-<td>Technique / détection</td>
-<td>4 — Très élevée</td>
-<td>4 — Critique</td>
+<td>Connexions étrangères inhabituelles</td>
+<td>4</td>
+<td>4</td>
 <td><strong>16 — Critique</strong></td>
-<td>Maintien d’un attaquant dans le système, exfiltration silencieuse, création de portes dérobées<sup id="fnref:backdoor"><a class="footnote-ref" href="#fn:backdoor">1.2</a></sup>, altération des journaux et compromission de la future plateforme dès son lancement.</td>
-<td><strong>Non.</strong> Une investigation doit déterminer l’origine, la légitimité et l’étendue de ces connexions avant toute ouverture du service. L’absence de preuve d’intrusion ne constitue pas une preuve d’absence d’intrusion.</td>
+<td><strong>Non</strong></td>
 </tr>
 <tr>
 <td>4</td>
-<td><strong>Indisponibilité prolongée ou perte de données en raison d’un PRA jamais testé en conditions réelles</strong><sup id="fnref:pra"><a class="footnote-ref" href="#fn:pra">1.3</a></sup></td>
-<td>Résilience / technique</td>
-<td>3 — Élevée</td>
-<td>4 — Critique</td>
+<td>PRA<sup id="fnref:pra"><a class="footnote-ref" href="#fn:pra">1.1</a></sup> jamais testé en conditions réelles</td>
+<td>3</td>
+<td>4</td>
 <td><strong>12 — Critique</strong></td>
-<td>Restauration impossible ou trop lente, perte de documents, interruption des services clients, non-respect des objectifs de reprise, pénalités contractuelles et rupture de confiance.</td>
-<td><strong>Non.</strong> Un test complet de restauration et de bascule doit confirmer les sauvegardes, le RTO<sup id="fnref:rto"><a class="footnote-ref" href="#fn:rto">1.4</a></sup>, le RPO<sup id="fnref:rpo"><a class="footnote-ref" href="#fn:rpo">1.5</a></sup>, les responsabilités et les procédures de retour à la normale.</td>
+<td><strong>Non</strong></td>
 </tr>
 <tr>
 <td>5</td>
-<td><strong>Vol d’identifiants ou compromission d’un compte à privilèges à la suite d’un phishing ciblé</strong><sup id="fnref:phishing"><a class="footnote-ref" href="#fn:phishing">1.6</a></sup></td>
-<td>Humain / technique</td>
-<td>3 — Élevée</td>
-<td>4 — Critique</td>
+<td>Phishing<sup id="fnref:phishing"><a class="footnote-ref" href="#fn:phishing">1.2</a></sup> ciblé et vol d’identifiants</td>
+<td>3</td>
+<td>4</td>
 <td><strong>12 — Critique</strong></td>
-<td>Accès frauduleux aux comptes de direction ou d’administration, fraude, divulgation de données sensibles, mouvement latéral, usurpation d’identité et contournement des contrôles internes.</td>
-<td><strong>Non en l’état.</strong> Il faut renforcer immédiatement la MFA, la protection de la messagerie, les procédures de signalement et la sensibilisation ciblée des personnes exposées.</td>
-</tr>
-<tr>
-<td>6</td>
-<td><strong>Fuite, altération ou destruction de documents confidentiels et de données personnelles</strong></td>
-<td>Réglementaire / métier</td>
-<td>3 — Élevée</td>
-<td>4 — Critique</td>
-<td><strong>12 — Critique</strong></td>
-<td>Atteinte à la confidentialité, au secret des affaires et aux droits des personnes ; notification potentielle à la CNIL<sup id="fnref:cnil"><a class="footnote-ref" href="#fn:cnil">1.7</a></sup> sous 72 heures lorsqu’une violation de données présente un risque ; information éventuelle des personnes ; contentieux, sanctions, pertes commerciales et préjudice réputationnel.</td>
-<td><strong>Non.</strong> La confidentialité, l’intégrité, le chiffrement, le contrôle des accès, la traçabilité et la gestion des violations doivent être démontrés avant l’ouverture.</td>
-</tr>
-<tr>
-<td>7</td>
-<td><strong>Répartition imprécise des responsabilités entre l’entreprise, l’hébergeur et les sous-traitants</strong></td>
-<td>Organisationnel / prestataire</td>
-<td>3 — Élevée</td>
-<td>4 — Critique</td>
-<td><strong>12 — Critique</strong></td>
-<td>Retard dans la détection, le confinement, la notification et la restauration ; décisions contradictoires ; absence d’interlocuteur disponible ; défaut de preuve ; litiges et non-respect des délais réglementaires ou contractuels.</td>
-<td><strong>Non.</strong> Les rôles doivent être formalisés au moyen d’une matrice RACI<sup id="fnref:raci"><a class="footnote-ref" href="#fn:raci">1.8</a></sup>, de clauses contractuelles, d’une procédure d’escalade et d’un dispositif d’astreinte testé.</td>
-</tr>
-<tr>
-<td>8</td>
-<td><strong>Défaut de conformité des relations de sous-traitance et de la protection des données</strong></td>
-<td>Réglementaire / prestataire</td>
-<td>3 — Élevée</td>
-<td>3 — Majeure</td>
-<td><strong>9 — Élevé</strong></td>
-<td>Clauses insuffisantes relatives à la sécurité, à la confidentialité, aux notifications, aux audits, à la restitution ou à la suppression des données ; transferts internationaux mal encadrés ; responsabilité juridique et sanctions.</td>
-<td><strong>Non sans vérification.</strong> Les contrats, l’article 28 du RGPD<sup id="fnref:rgpd"><a class="footnote-ref" href="#fn:rgpd">1.9</a></sup>, la localisation des données, les éventuels transferts hors EEE et les garanties des sous-traitants doivent être contrôlés.</td>
-</tr>
-<tr>
-<td>9</td>
-<td><strong>Surveillance et journalisation insuffisantes ou non exploitables</strong></td>
-<td>Technique / organisationnel</td>
-<td>3 — Élevée</td>
-<td>3 — Majeure</td>
-<td><strong>9 — Élevé</strong></td>
-<td>Détection tardive, absence de corrélation des événements, conservation insuffisante, incapacité à reconstituer l’attaque ou à produire des preuves et allongement du temps de réponse.</td>
-<td><strong>Non sans mesures complémentaires.</strong> Les sources critiques doivent être centralisées, horodatées, protégées contre l’altération, supervisées et associées à des alertes testées avant le lancement.</td>
-</tr>
-<tr>
-<td>10</td>
-<td><strong>Gestion insuffisante des identités, des habilitations et du moindre privilège</strong><sup id="fnref:least-privilege"><a class="footnote-ref" href="#fn:least-privilege">1.10</a></sup></td>
-<td>Technique / organisationnel</td>
-<td>3 — Élevée</td>
-<td>3 — Majeure</td>
-<td><strong>9 — Élevé</strong></td>
-<td>Comptes orphelins ou partagés, privilèges excessifs, accès injustifiés aux documents, traçabilité faible et augmentation de l’impact d’un compte compromis.</td>
-<td><strong>Non sans revue préalable.</strong> Une revue des habilitations et des comptes techniques, administrateurs et prestataires est indispensable avant la production.</td>
-</tr>
-<tr>
-<td>11</td>
-<td><strong>Réponse aux incidents insuffisamment préparée ou non testée</strong></td>
-<td>Organisationnel</td>
-<td>2 — Moyenne</td>
-<td>4 — Critique</td>
-<td><strong>8 — Élevé</strong></td>
-<td>Mauvaises décisions sous pression, confinement tardif, perte de preuves, communication incohérente, dépassement des délais de notification et aggravation de l’incident.</td>
-<td><strong>Non sans exercice préalable.</strong> Le plan de réponse, la cellule de crise, les contacts, les procédures de collecte de preuves et les scénarios de communication doivent être testés au minimum lors d’un exercice sur table<sup id="fnref:ttx"><a class="footnote-ref" href="#fn:ttx">1.11</a></sup>.</td>
-</tr>
-<tr>
-<td>12</td>
-<td><strong>Lancement précipité sous contrainte de calendrier</strong></td>
-<td>Stratégique / organisationnel</td>
-<td>3 — Élevée</td>
-<td>3 — Majeure</td>
-<td><strong>9 — Élevé</strong></td>
-<td>Acceptation implicite de risques non maîtrisés, correctifs incomplets, erreurs de configuration, tests raccourcis, dette de sécurité et incident majeur peu après l’ouverture.</td>
-<td><strong>Non en l’état.</strong> La décision de lancement doit dépendre de critères de sécurité mesurables et d’une validation formelle, et non uniquement de l’échéance commerciale.</td>
-</tr>
-<tr>
-<td>13</td>
-<td><strong>Attaque par déni de service ou saturation lors de l’ouverture</strong></td>
-<td>Technique / disponibilité</td>
-<td>2 — Moyenne</td>
-<td>3 — Majeure</td>
-<td><strong>6 — Modéré</strong></td>
-<td>Indisponibilité du portail, dégradation des performances, échec du lancement, dépassement des capacités et non-respect des engagements de service.</td>
-<td><strong>Acceptable sous conditions</strong>, après tests de charge, mise en place de protections anti-DDoS<sup id="fnref:ddos"><a class="footnote-ref" href="#fn:ddos">1.12</a></sup>, limitation de débit, supervision et procédure d’escalade avec l’hébergeur.</td>
-</tr>
-<tr>
-<td>14</td>
-<td><strong>Erreur humaine de configuration ou de déploiement pendant la mise en production</strong></td>
-<td>Humain / technique</td>
-<td>2 — Moyenne</td>
-<td>3 — Majeure</td>
-<td><strong>6 — Modéré</strong></td>
-<td>Exposition accidentelle d’un service, secret présent dans la configuration, mauvaise règle réseau, perte de disponibilité ou accès non autorisé.</td>
-<td><strong>Acceptable sous conditions</strong>, avec revue par les pairs, automatisation du déploiement, séparation des rôles, gestion sécurisée des secrets et procédure de retour arrière testée.</td>
+<td><strong>Non</strong></td>
 </tr>
 </tbody>
 </table>
-</div><div class="keep-together"><h4>1.3. Synthèse de l’analyse</h4>
-<p>La situation présente <strong>sept risques critiques</strong> et plusieurs risques élevés. Leur cumul est particulièrement préoccupant : un attaquant pourrait exploiter une vulnérabilité exposée à Internet ou un compte privilégié compromis, rester non détecté en raison d’une supervision insuffisante, puis provoquer une fuite de données ou une interruption que le PRA non testé ne permettrait pas de maîtriser correctement.</p>
+<blockquote>
+<p><strong>Légende :</strong> P = probabilité ; G = gravité.</p>
+</blockquote>
+</div><div class="keep-together"><h4>1.3. Détail des risques</h4>
+<h5>Risque 1 — Vulnérabilités sur les serveurs exposés à Internet</h5>
+<ul>
+<li><strong>Catégorie :</strong> technique.</li>
+<li><strong>Conséquences :</strong> intrusion, exécution de code, compromission de comptes, vol ou modification de documents, indisponibilité et propagation dans le système d’information.</li>
+<li><strong>Acceptabilité :</strong> <strong>non acceptable</strong>. Les vulnérabilités importantes ou critiques exploitables doivent être corrigées ou isolées, puis contrôlées avant l’ouverture.</li>
+</ul>
+<h5>Risque 2 — Comptes administrateurs permanents du prestataire</h5>
+<ul>
+<li><strong>Catégorie :</strong> prestataire et technique.</li>
+<li><strong>Conséquences :</strong> détournement d’un compte privilégié, élévation de privilèges, accès massif aux données, sabotage et difficulté à attribuer les actions.</li>
+<li><strong>Acceptabilité :</strong> <strong>non acceptable</strong>. Les accès doivent être nominatifs, temporaires, limités, protégés par MFA<sup id="fnref:mfa"><a class="footnote-ref" href="#fn:mfa">1.3</a></sup> et intégralement journalisés.</li>
+</ul>
+<h5>Risque 3 — Connexions inhabituelles provenant de l’étranger</h5>
+<ul>
+<li><strong>Catégorie :</strong> technique et détection.</li>
+<li><strong>Conséquences :</strong> présence possible d’un attaquant, exfiltration silencieuse, création de portes dérobées<sup id="fnref:backdoor"><a class="footnote-ref" href="#fn:backdoor">1.4</a></sup> et altération des journaux.</li>
+<li><strong>Acceptabilité :</strong> <strong>non acceptable</strong>. Une investigation doit établir l’origine, la légitimité et l’étendue de ces connexions avant le lancement.</li>
+</ul>
+<h5>Risque 4 — PRA jamais testé en conditions réelles</h5>
+<ul>
+<li><strong>Catégorie :</strong> résilience et technique.</li>
+<li><strong>Conséquences :</strong> restauration impossible ou trop lente, perte de documents, interruption prolongée et non-respect des engagements de service.</li>
+<li><strong>Acceptabilité :</strong> <strong>non acceptable</strong>. La restauration, la bascule, le RTO<sup id="fnref:rto"><a class="footnote-ref" href="#fn:rto">1.5</a></sup> et le RPO<sup id="fnref:rpo"><a class="footnote-ref" href="#fn:rpo">1.6</a></sup> doivent être testés et validés.</li>
+</ul>
+<h5>Risque 5 — Phishing ciblé et vol d’identifiants</h5>
+<ul>
+<li><strong>Catégorie :</strong> humaine et technique.</li>
+<li><strong>Conséquences :</strong> compromission des comptes de direction ou d’administration, fraude, fuite de données et mouvement latéral dans le système d’information.</li>
+<li><strong>Acceptabilité :</strong> <strong>non acceptable en l’état</strong>. La MFA, la sécurité de la messagerie, le signalement et la sensibilisation ciblée doivent être renforcés.</li>
+</ul>
+</div><div class="keep-together"><h4>1.4. Synthèse de l’analyse</h4>
+<p>La situation présente <strong>cinq risques prioritaires</strong>, dont trois atteignent le niveau de criticité maximal. Leur cumul est particulièrement préoccupant : un attaquant pourrait exploiter une vulnérabilité exposée à Internet, détourner un compte administrateur permanent ou obtenir des identifiants par phishing. Les connexions inhabituelles peuvent également indiquer qu’une compromission est déjà en cours. Une attaque pourrait alors provoquer une fuite de données confidentielles, une interruption du service et des conséquences réglementaires, contractuelles et réputationnelles. Le PRA n’ayant jamais été testé, la capacité réelle de l’entreprise à restaurer le service n’est pas démontrée.</p>
 <p>Les risques ne sont donc pas indépendants. Ils forment une chaîne d’attaque plausible :</p>
 <ol>
 <li>phishing ciblé ou exploitation d’une vulnérabilité exposée ;</li>
@@ -715,71 +648,53 @@ Envisageable uniquement si les risques critiques peuvent être suffisamment réd
 <div class="footnote">
 <hr>
 <ol>
-<li id="fn:mfa">
-<p><span class="fn-num">1.1</span> <strong>MFA</strong> (<em>Multi-Factor Authentication</em>) — Authentification à plusieurs facteurs (ex. mot de passe + code / application).&#160;<a class="footnote-backref" href="#fnref:mfa" title="Retour à la note 1.1 1 in the text">&#8617;</a></p>
-</li>
-<li id="fn:backdoor">
-<p><span class="fn-num">1.2</span> <strong>Porte dérobée</strong> (<em>backdoor</em>) — Accès secret laissé ou installé par un attaquant pour revenir dans un système après l’intrusion initiale.&#160;<a class="footnote-backref" href="#fnref:backdoor" title="Retour à la note 1.2 2 in the text">&#8617;</a></p>
-</li>
 <li id="fn:pra">
-<p><span class="fn-num">1.3</span> <strong>PRA</strong> (<em>Plan de Reprise d’Activité</em>) — Dispositif pour restaurer les systèmes et données après un sinistre ou un incident majeur (souvent lié au PCA).&#160;<a class="footnote-backref" href="#fnref:pra" title="Retour à la note 1.3 3 in the text">&#8617;</a></p>
-</li>
-<li id="fn:rto">
-<p><span class="fn-num">1.4</span> <strong>RTO</strong> (<em>Recovery Time Objective</em>) — Durée maximale acceptable d’interruption d’un service avant reprise.&#160;<a class="footnote-backref" href="#fnref:rto" title="Retour à la note 1.4 4 in the text">&#8617;</a></p>
-</li>
-<li id="fn:rpo">
-<p><span class="fn-num">1.5</span> <strong>RPO</strong> (<em>Recovery Point Objective</em>) — Perte de données maximale acceptable (ex. : dernières X heures non sauvegardées).&#160;<a class="footnote-backref" href="#fnref:rpo" title="Retour à la note 1.5 5 in the text">&#8617;</a></p>
+<p><span class="fn-num">1.1</span> <strong>PRA</strong> (<em>Plan de Reprise d’Activité</em>) — Dispositif pour restaurer les systèmes et données après un sinistre ou un incident majeur (souvent lié au PCA).&#160;<a class="footnote-backref" href="#fnref:pra" title="Retour à la note 1.1 1 in the text">&#8617;</a></p>
 </li>
 <li id="fn:phishing">
-<p><span class="fn-num">1.6</span> <strong>Phishing</strong> — Technique d’ingénierie sociale visant à tromper une victime pour obtenir des identifiants ou déployer un malware.&#160;<a class="footnote-backref" href="#fnref:phishing" title="Retour à la note 1.6 6 in the text">&#8617;</a></p>
+<p><span class="fn-num">1.2</span> <strong>Phishing</strong> — Technique d’ingénierie sociale visant à tromper une victime pour obtenir des identifiants ou déployer un malware.&#160;<a class="footnote-backref" href="#fnref:phishing" title="Retour à la note 1.2 2 in the text">&#8617;</a></p>
 </li>
-<li id="fn:cnil">
-<p><span class="fn-num">1.7</span> <strong>CNIL</strong> — Commission nationale de l’informatique et des libertés. Autorité de contrôle du RGPD en France.&#160;<a class="footnote-backref" href="#fnref:cnil" title="Retour à la note 1.7 7 in the text">&#8617;</a></p>
+<li id="fn:mfa">
+<p><span class="fn-num">1.3</span> <strong>MFA</strong> (<em>Multi-Factor Authentication</em>) — Authentification à plusieurs facteurs (ex. mot de passe + code / application).&#160;<a class="footnote-backref" href="#fnref:mfa" title="Retour à la note 1.3 3 in the text">&#8617;</a></p>
 </li>
-<li id="fn:raci">
-<p><span class="fn-num">1.8</span> <strong>RACI</strong> — Matrice de responsabilités (<em>Responsible, Accountable, Consulted, Informed</em>) qui clarifie qui fait quoi en cas d’incident.&#160;<a class="footnote-backref" href="#fnref:raci" title="Retour à la note 1.8 8 in the text">&#8617;</a></p>
+<li id="fn:backdoor">
+<p><span class="fn-num">1.4</span> <strong>Porte dérobée</strong> (<em>backdoor</em>) — Accès secret laissé ou installé par un attaquant pour revenir dans un système après l’intrusion initiale.&#160;<a class="footnote-backref" href="#fnref:backdoor" title="Retour à la note 1.4 4 in the text">&#8617;</a></p>
 </li>
-<li id="fn:rgpd">
-<p><span class="fn-num">1.9</span> <strong>RGPD</strong> — Règlement général sur la protection des données (UE). Impose notamment la notification à l’autorité (CNIL) sous <strong>72 h</strong> en cas de violation présentant un risque pour les personnes.&#160;<a class="footnote-backref" href="#fnref:rgpd" title="Retour à la note 1.9 9 in the text">&#8617;</a></p>
+<li id="fn:rto">
+<p><span class="fn-num">1.5</span> <strong>RTO</strong> (<em>Recovery Time Objective</em>) — Durée maximale acceptable d’interruption d’un service avant reprise.&#160;<a class="footnote-backref" href="#fnref:rto" title="Retour à la note 1.5 5 in the text">&#8617;</a></p>
 </li>
-<li id="fn:least-privilege">
-<p><span class="fn-num">1.10</span> <strong>Moindre privilège</strong> — Principe selon lequel un compte ne dispose que des droits strictement nécessaires à sa mission.&#160;<a class="footnote-backref" href="#fnref:least-privilege" title="Retour à la note 1.10 10 in the text">&#8617;</a></p>
-</li>
-<li id="fn:ttx">
-<p><span class="fn-num">1.11</span> <strong>Exercice sur table</strong> (<em>table-top</em> / TTX) — Simulation de crise où les décideurs déroulent un scénario et décident des actions, sans toucher au SI de production.&#160;<a class="footnote-backref" href="#fnref:ttx" title="Retour à la note 1.11 11 in the text">&#8617;</a></p>
-</li>
-<li id="fn:ddos">
-<p><span class="fn-num">1.12</span> <strong>DDoS</strong> (<em>Distributed Denial of Service</em>) — Attaque par déni de service distribué saturant un service pour le rendre inaccessible.&#160;<a class="footnote-backref" href="#fnref:ddos" title="Retour à la note 1.12 12 in the text">&#8617;</a></p>
+<li id="fn:rpo">
+<p><span class="fn-num">1.6</span> <strong>RPO</strong> (<em>Recovery Point Objective</em>) — Perte de données maximale acceptable (ex. : dernières X heures non sauvegardées).&#160;<a class="footnote-backref" href="#fnref:rpo" title="Retour à la note 1.6 6 in the text">&#8617;</a></p>
 </li>
 <li id="fn:rssi">
-<p><span class="fn-num">2.1</span> <strong>RSSI</strong> (<em>Responsable de la Sécurité des Systèmes d’Information</em>) — Cadre chargé de piloter la politique de cybersécurité et de coordonner la réponse aux incidents.&#160;<a class="footnote-backref" href="#fnref:rssi" title="Retour à la note 2.1 13 in the text">&#8617;</a></p>
+<p><span class="fn-num">2.1</span> <strong>RSSI</strong> (<em>Responsable de la Sécurité des Systèmes d’Information</em>) — Cadre chargé de piloter la politique de cybersécurité et de coordonner la réponse aux incidents.&#160;<a class="footnote-backref" href="#fnref:rssi" title="Retour à la note 2.1 7 in the text">&#8617;</a></p>
 </li>
 <li id="fn:anssi">
-<p><span class="fn-num">2.2</span> <strong>ANSSI</strong> — Agence nationale de la sécurité des systèmes d’information. Autorité nationale française en cybersécurité.&#160;<a class="footnote-backref" href="#fnref:anssi" title="Retour à la note 2.2 14 in the text">&#8617;</a></p>
+<p><span class="fn-num">2.2</span> <strong>ANSSI</strong> — Agence nationale de la sécurité des systèmes d’information. Autorité nationale française en cybersécurité.&#160;<a class="footnote-backref" href="#fnref:anssi" title="Retour à la note 2.2 8 in the text">&#8617;</a></p>
 </li>
 <li id="fn:nis2">
-<p><span class="fn-num">2.3</span> <strong>NIS2</strong> — Directive européenne sur la sécurité des réseaux et de l’information ; élargit les obligations de sécurité et de notification pour certains acteurs essentiels / importants.&#160;<a class="footnote-backref" href="#fnref:nis2" title="Retour à la note 2.3 15 in the text">&#8617;</a></p>
+<p><span class="fn-num">2.3</span> <strong>NIS2</strong> — Directive européenne sur la sécurité des réseaux et de l’information ; élargit les obligations de sécurité et de notification pour certains acteurs essentiels / importants.&#160;<a class="footnote-backref" href="#fnref:nis2" title="Retour à la note 2.3 9 in the text">&#8617;</a></p>
 </li>
 <li id="fn:siem">
-<p><span class="fn-num">3.1</span> <strong>SIEM</strong> (<em>Security Information and Event Management</em>) — Plateforme qui centralise les journaux et détecte des anomalies / corrélations.&#160;<a class="footnote-backref" href="#fnref:siem" title="Retour à la note 3.1 16 in the text">&#8617;</a></p>
+<p><span class="fn-num">3.1</span> <strong>SIEM</strong> (<em>Security Information and Event Management</em>) — Plateforme qui centralise les journaux et détecte des anomalies / corrélations.&#160;<a class="footnote-backref" href="#fnref:siem" title="Retour à la note 3.1 10 in the text">&#8617;</a></p>
 </li>
 <li id="fn:waf">
-<p><span class="fn-num">3.2</span> <strong>WAF</strong> (<em>Web Application Firewall</em>) — Pare-feu applicatif qui filtre les requêtes HTTP malveillantes.&#160;<a class="footnote-backref" href="#fnref:waf" title="Retour à la note 3.2 17 in the text">&#8617;</a></p>
+<p><span class="fn-num">3.2</span> <strong>WAF</strong> (<em>Web Application Firewall</em>) — Pare-feu applicatif qui filtre les requêtes HTTP malveillantes.&#160;<a class="footnote-backref" href="#fnref:waf" title="Retour à la note 3.2 11 in the text">&#8617;</a></p>
 </li>
 <li id="fn:iam">
-<p><span class="fn-num">3.3</span> <strong>IAM</strong> (<em>Identity and Access Management</em>) — Gestion des identités et des accès (comptes, droits, cycle de vie).&#160;<a class="footnote-backref" href="#fnref:iam" title="Retour à la note 3.3 18 in the text">&#8617;</a></p>
+<p><span class="fn-num">3.3</span> <strong>IAM</strong> (<em>Identity and Access Management</em>) — Gestion des identités et des accès (comptes, droits, cycle de vie).&#160;<a class="footnote-backref" href="#fnref:iam" title="Retour à la note 3.3 12 in the text">&#8617;</a></p>
 </li>
 <li id="fn:edr">
-<p><span class="fn-num">3.4</span> <strong>EDR</strong> (<em>Endpoint Detection and Response</em>) — Détection et réponse sur les postes / serveurs (endpoints).&#160;<a class="footnote-backref" href="#fnref:edr" title="Retour à la note 3.4 19 in the text">&#8617;</a></p>
+<p><span class="fn-num">3.4</span> <strong>EDR</strong> (<em>Endpoint Detection and Response</em>) — Détection et réponse sur les postes / serveurs (endpoints).&#160;<a class="footnote-backref" href="#fnref:edr" title="Retour à la note 3.4 13 in the text">&#8617;</a></p>
 </li>
 <li id="fn:supply-chain">
-<p><span class="fn-num">3.5</span> <strong>Supply chain</strong> (chaîne d’approvisionnement) — Risques liés aux prestataires, éditeurs et sous-traitants dont dépend le SI.&#160;<a class="footnote-backref" href="#fnref:supply-chain" title="Retour à la note 3.5 20 in the text">&#8617;</a></p>
+<p><span class="fn-num">3.5</span> <strong>Supply chain</strong> (chaîne d’approvisionnement) — Risques liés aux prestataires, éditeurs et sous-traitants dont dépend le SI.&#160;<a class="footnote-backref" href="#fnref:supply-chain" title="Retour à la note 3.5 14 in the text">&#8617;</a></p>
 </li>
 <li id="fn:soc">
-<p><span class="fn-num">3.6</span> <strong>SOC</strong> (<em>Security Operations Center</em>) — Centre qui surveille les alertes et coordonne la réponse technique.&#160;<a class="footnote-backref" href="#fnref:soc" title="Retour à la note 3.6 21 in the text">&#8617;</a></p>
+<p><span class="fn-num">3.6</span> <strong>SOC</strong> (<em>Security Operations Center</em>) — Centre qui surveille les alertes et coordonne la réponse technique.&#160;<a class="footnote-backref" href="#fnref:soc" title="Retour à la note 3.6 15 in the text">&#8617;</a></p>
 </li>
 <li id="fn:dpo">
-<p><span class="fn-num">5.1</span> <strong>DPO</strong> (<em>Data Protection Officer</em> / Délégué à la protection des données) — Responsable du respect du RGPD ; intervient pour évaluer et notifier une violation de données.&#160;<a class="footnote-backref" href="#fnref:dpo" title="Retour à la note 5.1 22 in the text">&#8617;</a></p>
+<p><span class="fn-num">5.1</span> <strong>DPO</strong> (<em>Data Protection Officer</em> / Délégué à la protection des données) — Responsable du respect du RGPD ; intervient pour évaluer et notifier une violation de données.&#160;<a class="footnote-backref" href="#fnref:dpo" title="Retour à la note 5.1 16 in the text">&#8617;</a></p>
 </li>
 </ol>
 </div>

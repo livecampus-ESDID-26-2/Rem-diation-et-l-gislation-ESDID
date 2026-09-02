@@ -79,26 +79,53 @@ Cette cotation est une première estimation. Elle devra être confirmée à part
 
 #### 1.2. Tableau des risques hiérarchisé
 
-| Rang | Risque principal | Catégorie | Probabilité | Gravité | Criticité | Conséquences potentielles | Acceptable avant la mise en production ? |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | **Exploitation des vulnérabilités importantes présentes sur les serveurs exposés à Internet** | Technique | 4 — Très élevée | 4 — Critique | **16 — Critique** | Intrusion, exécution de code, compromission de comptes, vol ou modification de documents, indisponibilité de la plateforme, propagation dans le système d’information et atteinte à l’image de l’entreprise. | **Non.** Les vulnérabilités critiques ou importantes exploitables doivent être corrigées ou isolées, puis faire l’objet de tests de non-régression et d’un nouveau contrôle de sécurité. |
-| 2 | **Compromission par les comptes administrateurs permanents du prestataire** | Prestataire / technique | 4 — Très élevée | 4 — Critique | **16 — Critique** | Utilisation abusive ou détournement d’un compte privilégié, élévation de privilèges, désactivation des protections, accès massif aux données, sabotage ou difficulté à attribuer les actions réalisées. | **Non.** Les accès permanents doivent être supprimés au profit d’accès nominatifs, temporaires, limités, authentifiés par MFA[^mfa] et intégralement journalisés. |
-| 3 | **Intrusion potentiellement déjà en cours, révélée par les connexions inhabituelles depuis l’étranger** | Technique / détection | 4 — Très élevée | 4 — Critique | **16 — Critique** | Maintien d’un attaquant dans le système, exfiltration silencieuse, création de portes dérobées[^backdoor], altération des journaux et compromission de la future plateforme dès son lancement. | **Non.** Une investigation doit déterminer l’origine, la légitimité et l’étendue de ces connexions avant toute ouverture du service. L’absence de preuve d’intrusion ne constitue pas une preuve d’absence d’intrusion. |
-| 4 | **Indisponibilité prolongée ou perte de données en raison d’un PRA jamais testé en conditions réelles**[^pra] | Résilience / technique | 3 — Élevée | 4 — Critique | **12 — Critique** | Restauration impossible ou trop lente, perte de documents, interruption des services clients, non-respect des objectifs de reprise, pénalités contractuelles et rupture de confiance. | **Non.** Un test complet de restauration et de bascule doit confirmer les sauvegardes, le RTO[^rto], le RPO[^rpo], les responsabilités et les procédures de retour à la normale. |
-| 5 | **Vol d’identifiants ou compromission d’un compte à privilèges à la suite d’un phishing ciblé**[^phishing] | Humain / technique | 3 — Élevée | 4 — Critique | **12 — Critique** | Accès frauduleux aux comptes de direction ou d’administration, fraude, divulgation de données sensibles, mouvement latéral, usurpation d’identité et contournement des contrôles internes. | **Non en l’état.** Il faut renforcer immédiatement la MFA, la protection de la messagerie, les procédures de signalement et la sensibilisation ciblée des personnes exposées. |
-| 6 | **Fuite, altération ou destruction de documents confidentiels et de données personnelles** | Réglementaire / métier | 3 — Élevée | 4 — Critique | **12 — Critique** | Atteinte à la confidentialité, au secret des affaires et aux droits des personnes ; notification potentielle à la CNIL[^cnil] sous 72 heures lorsqu’une violation de données présente un risque ; information éventuelle des personnes ; contentieux, sanctions, pertes commerciales et préjudice réputationnel. | **Non.** La confidentialité, l’intégrité, le chiffrement, le contrôle des accès, la traçabilité et la gestion des violations doivent être démontrés avant l’ouverture. |
-| 7 | **Répartition imprécise des responsabilités entre l’entreprise, l’hébergeur et les sous-traitants** | Organisationnel / prestataire | 3 — Élevée | 4 — Critique | **12 — Critique** | Retard dans la détection, le confinement, la notification et la restauration ; décisions contradictoires ; absence d’interlocuteur disponible ; défaut de preuve ; litiges et non-respect des délais réglementaires ou contractuels. | **Non.** Les rôles doivent être formalisés au moyen d’une matrice RACI[^raci], de clauses contractuelles, d’une procédure d’escalade et d’un dispositif d’astreinte testé. |
-| 8 | **Défaut de conformité des relations de sous-traitance et de la protection des données** | Réglementaire / prestataire | 3 — Élevée | 3 — Majeure | **9 — Élevé** | Clauses insuffisantes relatives à la sécurité, à la confidentialité, aux notifications, aux audits, à la restitution ou à la suppression des données ; transferts internationaux mal encadrés ; responsabilité juridique et sanctions. | **Non sans vérification.** Les contrats, l’article 28 du RGPD[^rgpd], la localisation des données, les éventuels transferts hors EEE et les garanties des sous-traitants doivent être contrôlés. |
-| 9 | **Surveillance et journalisation insuffisantes ou non exploitables** | Technique / organisationnel | 3 — Élevée | 3 — Majeure | **9 — Élevé** | Détection tardive, absence de corrélation des événements, conservation insuffisante, incapacité à reconstituer l’attaque ou à produire des preuves et allongement du temps de réponse. | **Non sans mesures complémentaires.** Les sources critiques doivent être centralisées, horodatées, protégées contre l’altération, supervisées et associées à des alertes testées avant le lancement. |
-| 10 | **Gestion insuffisante des identités, des habilitations et du moindre privilège**[^least-privilege] | Technique / organisationnel | 3 — Élevée | 3 — Majeure | **9 — Élevé** | Comptes orphelins ou partagés, privilèges excessifs, accès injustifiés aux documents, traçabilité faible et augmentation de l’impact d’un compte compromis. | **Non sans revue préalable.** Une revue des habilitations et des comptes techniques, administrateurs et prestataires est indispensable avant la production. |
-| 11 | **Réponse aux incidents insuffisamment préparée ou non testée** | Organisationnel | 2 — Moyenne | 4 — Critique | **8 — Élevé** | Mauvaises décisions sous pression, confinement tardif, perte de preuves, communication incohérente, dépassement des délais de notification et aggravation de l’incident. | **Non sans exercice préalable.** Le plan de réponse, la cellule de crise, les contacts, les procédures de collecte de preuves et les scénarios de communication doivent être testés au minimum lors d’un exercice sur table[^ttx]. |
-| 12 | **Lancement précipité sous contrainte de calendrier** | Stratégique / organisationnel | 3 — Élevée | 3 — Majeure | **9 — Élevé** | Acceptation implicite de risques non maîtrisés, correctifs incomplets, erreurs de configuration, tests raccourcis, dette de sécurité et incident majeur peu après l’ouverture. | **Non en l’état.** La décision de lancement doit dépendre de critères de sécurité mesurables et d’une validation formelle, et non uniquement de l’échéance commerciale. |
-| 13 | **Attaque par déni de service ou saturation lors de l’ouverture** | Technique / disponibilité | 2 — Moyenne | 3 — Majeure | **6 — Modéré** | Indisponibilité du portail, dégradation des performances, échec du lancement, dépassement des capacités et non-respect des engagements de service. | **Acceptable sous conditions**, après tests de charge, mise en place de protections anti-DDoS[^ddos], limitation de débit, supervision et procédure d’escalade avec l’hébergeur. |
-| 14 | **Erreur humaine de configuration ou de déploiement pendant la mise en production** | Humain / technique | 2 — Moyenne | 3 — Majeure | **6 — Modéré** | Exposition accidentelle d’un service, secret présent dans la configuration, mauvaise règle réseau, perte de disponibilité ou accès non autorisé. | **Acceptable sous conditions**, avec revue par les pairs, automatisation du déploiement, séparation des rôles, gestion sécurisée des secrets et procédure de retour arrière testée. |
+Le tableau suivant présente les **cinq risques prioritaires**. Ils ont été retenus en raison de leur criticité et de leur lien direct avec les éléments constatés dans le cas.
 
-#### 1.3. Synthèse de l’analyse
+| N° | Risque synthétique | P | G | Criticité | Acceptable ? |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Vulnérabilités sur les serveurs Internet | 4 | 4 | **16 — Critique** | **Non** |
+| 2 | Comptes administrateurs permanents du prestataire | 4 | 4 | **16 — Critique** | **Non** |
+| 3 | Connexions étrangères inhabituelles | 4 | 4 | **16 — Critique** | **Non** |
+| 4 | PRA[^pra] jamais testé en conditions réelles | 3 | 4 | **12 — Critique** | **Non** |
+| 5 | Phishing[^phishing] ciblé et vol d’identifiants | 3 | 4 | **12 — Critique** | **Non** |
 
-La situation présente **sept risques critiques** et plusieurs risques élevés. Leur cumul est particulièrement préoccupant : un attaquant pourrait exploiter une vulnérabilité exposée à Internet ou un compte privilégié compromis, rester non détecté en raison d’une supervision insuffisante, puis provoquer une fuite de données ou une interruption que le PRA non testé ne permettrait pas de maîtriser correctement.
+> **Légende :** P = probabilité ; G = gravité.
+
+#### 1.3. Détail des risques
+
+##### Risque 1 — Vulnérabilités sur les serveurs exposés à Internet
+
+- **Catégorie :** technique.
+- **Conséquences :** intrusion, exécution de code, compromission de comptes, vol ou modification de documents, indisponibilité et propagation dans le système d’information.
+- **Acceptabilité :** **non acceptable**. Les vulnérabilités importantes ou critiques exploitables doivent être corrigées ou isolées, puis contrôlées avant l’ouverture.
+
+##### Risque 2 — Comptes administrateurs permanents du prestataire
+
+- **Catégorie :** prestataire et technique.
+- **Conséquences :** détournement d’un compte privilégié, élévation de privilèges, accès massif aux données, sabotage et difficulté à attribuer les actions.
+- **Acceptabilité :** **non acceptable**. Les accès doivent être nominatifs, temporaires, limités, protégés par MFA[^mfa] et intégralement journalisés.
+
+##### Risque 3 — Connexions inhabituelles provenant de l’étranger
+
+- **Catégorie :** technique et détection.
+- **Conséquences :** présence possible d’un attaquant, exfiltration silencieuse, création de portes dérobées[^backdoor] et altération des journaux.
+- **Acceptabilité :** **non acceptable**. Une investigation doit établir l’origine, la légitimité et l’étendue de ces connexions avant le lancement.
+
+##### Risque 4 — PRA jamais testé en conditions réelles
+
+- **Catégorie :** résilience et technique.
+- **Conséquences :** restauration impossible ou trop lente, perte de documents, interruption prolongée et non-respect des engagements de service.
+- **Acceptabilité :** **non acceptable**. La restauration, la bascule, le RTO[^rto] et le RPO[^rpo] doivent être testés et validés.
+
+##### Risque 5 — Phishing ciblé et vol d’identifiants
+
+- **Catégorie :** humaine et technique.
+- **Conséquences :** compromission des comptes de direction ou d’administration, fraude, fuite de données et mouvement latéral dans le système d’information.
+- **Acceptabilité :** **non acceptable en l’état**. La MFA, la sécurité de la messagerie, le signalement et la sensibilisation ciblée doivent être renforcés.
+
+#### 1.4. Synthèse de l’analyse
+
+La situation présente **cinq risques prioritaires**, dont trois atteignent le niveau de criticité maximal. Leur cumul est particulièrement préoccupant : un attaquant pourrait exploiter une vulnérabilité exposée à Internet, détourner un compte administrateur permanent ou obtenir des identifiants par phishing. Les connexions inhabituelles peuvent également indiquer qu’une compromission est déjà en cours. Une attaque pourrait alors provoquer une fuite de données confidentielles, une interruption du service et des conséquences réglementaires, contractuelles et réputationnelles. Le PRA n’ayant jamais été testé, la capacité réelle de l’entreprise à restaurer le service n’est pas démontrée.
 
 Les risques ne sont donc pas indépendants. Ils forment une chaîne d’attaque plausible :
 
@@ -377,18 +404,12 @@ Les chiffres en exposant dans le texte (ex. **1.1**, **2.1**, **3.1**) renvoient
 
 ///Footnotes Go Here///
 
+[^pra]: **PRA** (*Plan de Reprise d’Activité*) — Dispositif pour restaurer les systèmes et données après un sinistre ou un incident majeur (souvent lié au PCA).
+[^phishing]: **Phishing** — Technique d’ingénierie sociale visant à tromper une victime pour obtenir des identifiants ou déployer un malware.
 [^mfa]: **MFA** (*Multi-Factor Authentication*) — Authentification à plusieurs facteurs (ex. mot de passe + code / application).
 [^backdoor]: **Porte dérobée** (*backdoor*) — Accès secret laissé ou installé par un attaquant pour revenir dans un système après l’intrusion initiale.
-[^pra]: **PRA** (*Plan de Reprise d’Activité*) — Dispositif pour restaurer les systèmes et données après un sinistre ou un incident majeur (souvent lié au PCA).
 [^rto]: **RTO** (*Recovery Time Objective*) — Durée maximale acceptable d’interruption d’un service avant reprise.
 [^rpo]: **RPO** (*Recovery Point Objective*) — Perte de données maximale acceptable (ex. : dernières X heures non sauvegardées).
-[^phishing]: **Phishing** — Technique d’ingénierie sociale visant à tromper une victime pour obtenir des identifiants ou déployer un malware.
-[^cnil]: **CNIL** — Commission nationale de l’informatique et des libertés. Autorité de contrôle du RGPD en France.
-[^raci]: **RACI** — Matrice de responsabilités (*Responsible, Accountable, Consulted, Informed*) qui clarifie qui fait quoi en cas d’incident.
-[^rgpd]: **RGPD** — Règlement général sur la protection des données (UE). Impose notamment la notification à l’autorité (CNIL) sous **72 h** en cas de violation présentant un risque pour les personnes.
-[^least-privilege]: **Moindre privilège** — Principe selon lequel un compte ne dispose que des droits strictement nécessaires à sa mission.
-[^ttx]: **Exercice sur table** (*table-top* / TTX) — Simulation de crise où les décideurs déroulent un scénario et décident des actions, sans toucher au SI de production.
-[^ddos]: **DDoS** (*Distributed Denial of Service*) — Attaque par déni de service distribué saturant un service pour le rendre inaccessible.
 [^rssi]: **RSSI** (*Responsable de la Sécurité des Systèmes d’Information*) — Cadre chargé de piloter la politique de cybersécurité et de coordonner la réponse aux incidents.
 [^anssi]: **ANSSI** — Agence nationale de la sécurité des systèmes d’information. Autorité nationale française en cybersécurité.
 [^nis2]: **NIS2** — Directive européenne sur la sécurité des réseaux et de l’information ; élargit les obligations de sécurité et de notification pour certains acteurs essentiels / importants.
